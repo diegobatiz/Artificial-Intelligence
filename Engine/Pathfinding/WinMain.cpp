@@ -23,6 +23,10 @@ bool GameLoop(float deltaTime)
 		position.x += moveSpeed * deltaTime;
 	if (X::IsKeyDown(X::Keys::DOWN))
 		position.y += moveSpeed * deltaTime;
+	if (X::IsKeyDown(X::Keys::LEFT))
+		position.x -= moveSpeed * deltaTime;
+	if (X::IsKeyDown(X::Keys::UP))
+		position.y -= moveSpeed * deltaTime;
 
 	tileMap.Render();
 
