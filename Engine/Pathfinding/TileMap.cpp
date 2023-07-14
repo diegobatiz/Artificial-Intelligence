@@ -10,17 +10,49 @@ namespace
 
 void TileMap::LoadTiles(const char* fileName)
 {
-	// TODO - Read the provided file and populate mTiles here
+	const char* mFileName = fileName;
+
+	std::fstream inputStream;
+	inputStream.open(fileName);
+
+	inputStream >> mTileNum;
+
+	for (int i = 0; i < mTileNum; i++)
+	{
+		Tile newTile;
+		std::string textureStr;
+		
+		inputStream >> textureStr;
+		newTile.textureId = X::LoadTexture(textureStr.c_str());
+
+		inputStream >> newTile.canWalk;
+
+		mTiles.push_back(newTile);
+	}
 }
 
 void TileMap::LoadMap(const char* fileName)
 {
-	// TODO - Read the provided file and populate mMap here
+	const char* mFileName = fileName;
+
+	std::fstream inputStream;
+	inputStream.open(fileName);
+
+	inputStream >> mColumns;
+	inputStream >> mRows;
+	int tileType;
+
+	while (inputStream >> tileType)
+	{
+		mMap.push_back(tileType);
+	}
 }
 
 void TileMap::Render() const
 {
-	// TODO - Draw the map using mTiles and mMap
+	float spriteWidth = X::GetSpriteWidth(mTiles[0].textureId);
+	float spriteHeight = X::GetSpriteHeight(mTiles[0].textureId);
+	X::Math::Vector2 position;
 }
 
 // 2D map - 5 columns x 4 rows

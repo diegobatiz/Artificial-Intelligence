@@ -1,5 +1,6 @@
 #include "TileMap.h"
 #include <XEngine.h> // <> for external includes, "" for internal includes
+#include <ImGui/Inc/imgui.h>
 
 TileMap tileMap;
 X::TextureId textureId;
@@ -27,6 +28,11 @@ bool GameLoop(float deltaTime)
 		position.x -= moveSpeed * deltaTime;
 	if (X::IsKeyDown(X::Keys::UP))
 		position.y -= moveSpeed * deltaTime;
+
+
+	ImGui::Begin("TEST BOX");
+
+	ImGui::End();
 
 	tileMap.Render();
 

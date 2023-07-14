@@ -2,6 +2,12 @@
 
 #include <XEngine.h>
 
+struct Tile
+{
+	X::TextureId textureId = 0;
+	bool canWalk = true;
+};
+
 class TileMap
 {
 public:
@@ -12,7 +18,8 @@ public:
 
 private:
 	std::vector<int> mMap;
-	std::vector<X::TextureId> mTiles; // I forgot to add this in class
+	std::vector<Tile> mTiles; 
 	int mColumns = 0;
 	int mRows = 0;
+	int mTileNum = 0;
 };
