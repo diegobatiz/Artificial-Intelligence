@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VGP332", "VGP332", "{146A79
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pathfinding", "Pathfinding\Pathfinding.vcxproj", "{F1093807-7046-4870-B822-4E83C9B6A6B6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AI", "AI\AI.vcxproj", "{C31E0719-7DC9-4173-8CED-5701BCF2C191}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -77,6 +79,14 @@ Global
 		{F1093807-7046-4870-B822-4E83C9B6A6B6}.Release|x64.Build.0 = Release|x64
 		{F1093807-7046-4870-B822-4E83C9B6A6B6}.Release|x86.ActiveCfg = Release|Win32
 		{F1093807-7046-4870-B822-4E83C9B6A6B6}.Release|x86.Build.0 = Release|Win32
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Debug|x64.ActiveCfg = Debug|x64
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Debug|x64.Build.0 = Debug|x64
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Debug|x86.ActiveCfg = Debug|Win32
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Debug|x86.Build.0 = Debug|Win32
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Release|x64.ActiveCfg = Release|x64
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Release|x64.Build.0 = Release|x64
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Release|x86.ActiveCfg = Release|Win32
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,19 +98,9 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {856ED680-E9A4-400F-ADFF-D3C492DCA608}
 		{4F150A30-CECB-49D1-8283-6A3F57438CF5} = {856ED680-E9A4-400F-ADFF-D3C492DCA608}
 		{F1093807-7046-4870-B822-4E83C9B6A6B6} = {146A795E-C8E7-4258-9AD4-8E45F8B0F299}
+		{C31E0719-7DC9-4173-8CED-5701BCF2C191} = {7021208A-2477-419B-A0A3-A79CA757E822}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D84BED7-7031-4090-B4D3-57A9E4C0998B}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 1
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://ptychan.visualstudio.com/
-		SccProjectUniqueName0 = X\\External\\ImGui\\ImGui.vcxproj
-		SccProjectTopLevelParentUniqueName0 = X.sln
-		SccProjectName0 = X/External/ImGui
-		SccAuxPath0 = https://ptychan.visualstudio.com
-		SccLocalPath0 = X\\External\\ImGui
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 EndGlobal

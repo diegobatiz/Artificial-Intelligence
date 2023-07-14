@@ -29,11 +29,6 @@ bool GameLoop(float deltaTime)
 	if (X::IsKeyDown(X::Keys::UP))
 		position.y -= moveSpeed * deltaTime;
 
-
-	ImGui::Begin("TEST BOX");
-
-	ImGui::End();
-
 	tileMap.Render();
 
 	X::DrawSprite(textureId, position, X::Pivot::TopLeft, X::Flip::Horizontal);

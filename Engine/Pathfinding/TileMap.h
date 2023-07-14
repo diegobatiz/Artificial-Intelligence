@@ -5,7 +5,7 @@
 struct Tile
 {
 	X::TextureId textureId = 0;
-	bool canWalk = true;
+	bool isBlocked = false;
 };
 
 class TileMap
@@ -21,5 +21,4 @@ private:
 	std::vector<Tile> mTiles; 
 	int mColumns = 0;
 	int mRows = 0;
-	int mTileNum = 0;
 };

@@ -10,42 +10,60 @@ namespace
 
 void TileMap::LoadTiles(const char* fileName)
 {
-	const char* mFileName = fileName;
-
-	std::fstream inputStream;
-	inputStream.open(fileName);
-
-	inputStream >> mTileNum;
-
-	for (int i = 0; i < mTileNum; i++)
+	if (!std::filesystem::exists(fileName))
 	{
-		Tile newTile;
-		std::string textureStr;
-		
-		inputStream >> textureStr;
-		newTile.textureId = X::LoadTexture(textureStr.c_str());
-
-		inputStream >> newTile.canWalk;
-
-		mTiles.push_back(newTile);
+		return;
 	}
+
+	std::fstream file(fileName);
+	int count = 0; 
+	std::string buffer;
+
+	file >> buffer;
+	file >> count;
+
+	mTiles.clear();
+	mTiles.reserve(count);
+
+	for (int i = 0; i < count; i++)
+	{
+		int isBlocked = 0;
+
+		file >> buffer;
+		file >> isBlocked;
+		auto& tile = mTiles.emplace_back();
+		
+		tile.textureId = X::LoadTexture(buffer.c_str());
+		tile.isBlocked = isBlocked;
+	}
+
+	file.close();
 }
 
 void TileMap::LoadMap(const char* fileName)
 {
-	const char* mFileName = fileName;
-
-	std::fstream inputStream;
-	inputStream.open(fileName);
-
-	inputStream >> mColumns;
-	inputStream >> mRows;
-	int tileType;
-
-	while (inputStream >> tileType)
+	if (!std::filesystem::exists(fileName))
 	{
-		mMap.push_back(tileType);
+		return;
 	}
+
+	std::fstream file(fileName);
+	std::string buffer;
+
+	file >> buffer;
+	file >> mColumns;
+	file >> buffer;
+	file >> mRows;
+
+	char tileType;
+	while (file >> tileType)
+	{
+		int iTileType;
+		iTileType = tileType - '0';
+		mMap.push_back(iTileType);
+	}
+
+	file.close();
 }
 
 void TileMap::Render() const
@@ -53,12 +71,12 @@ void TileMap::Render() const
 	float spriteWidth = X::GetSpriteWidth(mTiles[0].textureId);
 	float spriteHeight = X::GetSpriteHeight(mTiles[0].textureId);
 	X::Math::Vector2 position;
-	for (int r = 0; r < mRows; r++)
+	for (int y = 0; y < mRows; y++)
 	{
-		for (int c = 0; c < mColumns; c++)
+		for (int x = 0; x < mColumns; x++)
 		{
-			int index = (r * mColumns) + c;
-			X::DrawSprite(mTiles[mMap[index]].textureId, position);
+			int index = (y * mColumns) + x;
+			X::DrawSprite(mTiles[mMap[index]].textureId, position, X::Pivot::TopLeft);
 			position.x += spriteWidth;
 		}
 		position.x = 0.0f;
