@@ -1,5 +1,7 @@
 #include "TileMap.h"
 
+using namespace AI;
+
 namespace
 {
 	inline int ToIndex(int x, int y, int columns)
@@ -38,6 +40,9 @@ void TileMap::LoadTiles(const char* fileName)
 	}
 
 	file.close();
+
+	mTileWidth = X::GetSpriteWidth(mTiles[0].textureId);
+	mTileHeight = X::GetSpriteHeight(mTiles[0].textureId);
 }
 
 void TileMap::LoadMap(const char* fileName)
@@ -64,12 +69,42 @@ void TileMap::LoadMap(const char* fileName)
 	}
 
 	file.close();
+
+	mGraph.Initialize(mColumns, mRows);
+	for (int r = 0; r < mRows; ++r)
+	{
+		for (int c = 0; c < mColumns; c++)
+		{
+			if (IsBlocked(c, r))
+			{
+				continue;
+			}
+
+			auto GetNeighbour = [&](int c, int r)->GridBasedGraph::Node*
+			{
+				if (IsBlocked(c, r))
+				{
+					return nullptr;
+				}
+
+				return mGraph.GetNode(c, r);
+			};
+
+			GridBasedGraph::Node* node = mGraph.GetNode(c, r);
+			node->neighbours[GridBasedGraph::Direction::North] = GetNeighbour(c, r - 1);
+			node->neighbours[GridBasedGraph::Direction::South] = GetNeighbour(c, r + 1);
+			node->neighbours[GridBasedGraph::Direction::East] = GetNeighbour(c + 1, r);
+			node->neighbours[GridBasedGraph::Direction::West] = GetNeighbour(c - 1, r);
+			node->neighbours[GridBasedGraph::Direction::NorthEast] = GetNeighbour(c + 1, r - 1);
+			node->neighbours[GridBasedGraph::Direction::NorthWest] = GetNeighbour(c - 1, r - 1);
+			node->neighbours[GridBasedGraph::Direction::SouthEast] = GetNeighbour(c + 1, r + 1);
+			node->neighbours[GridBasedGraph::Direction::SouthWest] = GetNeighbour(c - 1, r + 1);
+		}
+	}
 }
 
 void TileMap::Render() const
 {
-	float spriteWidth = X::GetSpriteWidth(mTiles[0].textureId);
-	float spriteHeight = X::GetSpriteHeight(mTiles[0].textureId);
 	X::Math::Vector2 position;
 	for (int y = 0; y < mRows; y++)
 	{
@@ -77,12 +112,59 @@ void TileMap::Render() const
 		{
 			int index = (y * mColumns) + x;
 			X::DrawSprite(mTiles[mMap[index]].textureId, position, X::Pivot::TopLeft);
-			position.x += spriteWidth;
+			position.x += mTileWidth;
 		}
 		position.x = 0.0f;
-		position.y += spriteHeight;
+		position.y += mTileHeight;
+	}
+
+	for (int r = 0; r < mRows; r++)
+	{
+		for (int c = 0; c < mColumns; c++)
+		{
+			const auto node = mGraph.GetNode(c, r);
+			for (const auto neighbour : node->neighbours)
+			{
+				if (neighbour == nullptr)
+				{
+					continue;
+				}
+				const auto a = GetPixelPosition(node->column, node->row);
+				const auto b = GetPixelPosition(neighbour->column, neighbour->row);
+				X::DrawScreenLine(a, b, X::Colors::Blue);
+			}
+		}
 	}
 }
+
+bool TileMap::IsBlocked(int x, int y) const
+{
+	const int index = ToIndex(x, y, mColumns);
+	if (index < mMap.size())
+	{
+		int tile = mMap[index];
+		return mTiles[tile].isBlocked;
+	}
+
+	return true;
+}
+
+X::Math::Vector2 TileMap::GetPixelPosition(int x, int y) const
+{
+	return
+	{
+		(x * 0.5f) * mTileWidth,
+		(y * 0.5f) * mTileHeight
+	};
+}
+
+
+
+
+
+
+
+
 
 // 2D map - 5 columns x 4 rows
 // [0][0][0][0][0]
