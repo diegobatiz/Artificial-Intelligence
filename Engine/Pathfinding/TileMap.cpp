@@ -53,6 +53,17 @@ void TileMap::Render() const
 	float spriteWidth = X::GetSpriteWidth(mTiles[0].textureId);
 	float spriteHeight = X::GetSpriteHeight(mTiles[0].textureId);
 	X::Math::Vector2 position;
+	for (int r = 0; r < mRows; r++)
+	{
+		for (int c = 0; c < mColumns; c++)
+		{
+			int index = (r * mColumns) + c;
+			X::DrawSprite(mTiles[mMap[index]].textureId, position);
+			position.x += spriteWidth;
+		}
+		position.x = 0.0f;
+		position.y += spriteHeight;
+	}
 }
 
 // 2D map - 5 columns x 4 rows
