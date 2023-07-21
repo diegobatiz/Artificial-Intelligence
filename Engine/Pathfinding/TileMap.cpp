@@ -70,6 +70,16 @@ void TileMap::LoadMap(const char* fileName)
 
 	file.close();
 
+	auto GetNeighbour = [&](int c, int r)->GridBasedGraph::Node*
+	{
+		if (IsBlocked(c, r))
+		{
+			return nullptr;
+		}
+
+		return mGraph.GetNode(c, r);
+	};
+
 	mGraph.Initialize(mColumns, mRows);
 	for (int r = 0; r < mRows; ++r)
 	{
@@ -79,16 +89,6 @@ void TileMap::LoadMap(const char* fileName)
 			{
 				continue;
 			}
-
-			auto GetNeighbour = [&](int c, int r)->GridBasedGraph::Node*
-			{
-				if (IsBlocked(c, r))
-				{
-					return nullptr;
-				}
-
-				return mGraph.GetNode(c, r);
-			};
 
 			GridBasedGraph::Node* node = mGraph.GetNode(c, r);
 			node->neighbours[GridBasedGraph::Direction::North] = GetNeighbour(c, r - 1);
@@ -153,8 +153,8 @@ X::Math::Vector2 TileMap::GetPixelPosition(int x, int y) const
 {
 	return
 	{
-		(x * 0.5f) * mTileWidth,
-		(y * 0.5f) * mTileHeight
+		(x + 0.5f) * mTileWidth,
+		(y + 0.5f) * mTileHeight
 	};
 }
 

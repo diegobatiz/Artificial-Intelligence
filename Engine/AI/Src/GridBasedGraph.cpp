@@ -12,7 +12,7 @@ void GridBasedGraph::Initialize(int columns, int rows)
 
 	for (int r = 0; r < rows; ++r)
 	{
-		for (int c = 0; c < rows; ++c)
+		for (int c = 0; c < columns; ++c)
 		{
 			auto& node = mNodes.emplace_back();
 			node.column = c;
