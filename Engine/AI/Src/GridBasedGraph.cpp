@@ -21,12 +21,23 @@ void GridBasedGraph::Initialize(int columns, int rows)
 	}
 }
 
+void AI::GridBasedGraph::ResetSearchParams()
+{
+	for (auto& node : mNodes)
+	{
+		node.Reset();
+	}
+}
+
 GridBasedGraph::Node* GridBasedGraph::GetNode(int x, int y)
 {
-	const int index = GetIndex(x, y);
-	if (index < mNodes.size())
+	if (x <= 0 && x > mColumns && y <= 0 && y > mRows);
 	{
-		return &mNodes[index];
+		const int index = GetIndex(x, y);
+		if (index < mNodes.size())
+		{
+			return &mNodes[index];
+		}
 	}
 
 	return nullptr;

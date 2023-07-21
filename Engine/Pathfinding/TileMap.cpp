@@ -149,6 +149,51 @@ bool TileMap::IsBlocked(int x, int y) const
 	return true;
 }
 
+Path TileMap::FindPathBFS(int startX, int startY, int endX, int endY)
+{
+	Path path;
+	BFS bfs;
+	if (bfs.Run(mGraph, startX, startY, endX, endY))
+	{
+		const auto& closedList = bfs.GetClosedList();
+		auto node = closedList.back();
+		while (node != nullptr)
+		{
+			path.push_back(GetPixelPosition(node->column, node->row));
+			node = node->parent;
+		}
+		std::reverse(path.begin(), path.end());
+	}
+	return path;
+}
+
+Path TileMap::FindPathDijkstra(int startX, int startY, int endX, int endY)
+{
+	Path path;
+	Dijkstra dijkstra;
+	auto getCost = [](const GridBasedGraph::Node* node, const GridBasedGraph::Node* neighbour)
+	{
+		if (node->column != neighbour->column && node->row != neighbour->row)
+		{
+			return 1.5f;
+		}
+
+		return 1.0f;
+	};
+	if (dijkstra.Run(mGraph, startX, startY, endX, endY, getCost))
+	{
+		const auto& closedList = dijkstra.GetClosedList();
+		auto node = closedList.back();
+		while (node != nullptr)
+		{
+			path.push_back(GetPixelPosition(node->column, node->row));
+			node = node->parent;
+		}
+		std::reverse(path.begin(), path.end());
+	}
+	return path;
+}
+
 X::Math::Vector2 TileMap::GetPixelPosition(int x, int y) const
 {
 	return
@@ -157,24 +202,3 @@ X::Math::Vector2 TileMap::GetPixelPosition(int x, int y) const
 		(y + 0.5f) * mTileHeight
 	};
 }
-
-
-
-
-
-
-
-
-
-// 2D map - 5 columns x 4 rows
-// [0][0][0][0][0]
-// [0][0][0][0][0]
-// [0][0][0][X][0]   X is at (3, 2)
-// [0][0][0][0][0]
-
-// Stored as 1D - 5x4 = 20 slots
-// [0][0][0][0][0] [0][0][0][0][0] [0][0][0][X][0] [0][0][0][0][0]
-//
-// index = column + (row * columnCount)
-//       = 3 + (2 * 5)
-//       = 13

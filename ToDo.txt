@@ -1,0 +1,5 @@
+implement DFS
+
+finish dijkstra
+
+implement A*
