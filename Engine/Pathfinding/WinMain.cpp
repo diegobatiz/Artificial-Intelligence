@@ -28,7 +28,18 @@ bool GameLoop(float deltaTime)
 	if (ImGui::Button("RunBFS##"))
 	{
 		path = tileMap.FindPathBFS(startX, startY, endX, endY);
-
+	}
+	if (ImGui::Button("RunDFS##"))
+	{
+		path = tileMap.FindPathDFS(startX, startY, endX, endY);
+	}
+	if (ImGui::Button("RunDijkstra##"))
+	{
+		path = tileMap.FindPathDijkstra(startX, startY, endX, endY);
+	}
+	if (ImGui::Button("RunA*##"))
+	{
+		path = tileMap.FindPathAStar(startX, startY, endX, endY);
 	}
 	ImGui::End();
 

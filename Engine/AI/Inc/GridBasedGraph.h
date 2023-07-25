@@ -27,14 +27,16 @@ namespace AI
 			Node* parent = nullptr;
 			bool opened = false;
 			bool closed = false;
-			float cost = 0;
+			float cost = 0.0f;
+			float heuristic = 0.0f;
 
 			void Reset()
 			{
 				parent = nullptr;
 				opened = false;
 				closed = false;
-				cost = 0;
+				cost = 0.0f;
+				heuristic = 0.0f;
 			}
 		};
 

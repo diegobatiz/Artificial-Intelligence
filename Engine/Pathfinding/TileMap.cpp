@@ -139,11 +139,14 @@ void TileMap::Render() const
 
 bool TileMap::IsBlocked(int x, int y) const
 {
-	const int index = ToIndex(x, y, mColumns);
-	if (index < mMap.size())
+	if (x >= 0 && x < mColumns && y >= 0 && y < mRows)
 	{
-		int tile = mMap[index];
-		return mTiles[tile].isBlocked;
+		const int index = ToIndex(x, y, mColumns);
+		if (index < mMap.size())
+		{
+			int tile = mMap[index];
+			return mTiles[tile].isBlocked;
+		}
 	}
 
 	return true;
@@ -156,6 +159,24 @@ Path TileMap::FindPathBFS(int startX, int startY, int endX, int endY)
 	if (bfs.Run(mGraph, startX, startY, endX, endY))
 	{
 		const auto& closedList = bfs.GetClosedList();
+		auto node = closedList.back();
+		while (node != nullptr)
+		{
+			path.push_back(GetPixelPosition(node->column, node->row));
+			node = node->parent;
+		}
+		std::reverse(path.begin(), path.end());
+	}
+	return path;
+}
+
+Path TileMap::FindPathDFS(int startX, int startY, int endX, int endY)
+{
+	Path path;
+	DFS dfs;
+	if (dfs.Run(mGraph, startX, startY, endX, endY))
+	{
+		const auto& closedList = dfs.GetClosedList();
 		auto node = closedList.back();
 		while (node != nullptr)
 		{
@@ -180,9 +201,48 @@ Path TileMap::FindPathDijkstra(int startX, int startY, int endX, int endY)
 
 		return 1.0f;
 	};
+
 	if (dijkstra.Run(mGraph, startX, startY, endX, endY, getCost))
 	{
 		const auto& closedList = dijkstra.GetClosedList();
+		auto node = closedList.back();
+		while (node != nullptr)
+		{
+			path.push_back(GetPixelPosition(node->column, node->row));
+			node = node->parent;
+		}
+		std::reverse(path.begin(), path.end());
+	}
+	return path;
+}
+
+Path TileMap::FindPathAStar(int startX, int startY, int endX, int endY)
+{
+	Path path;
+	AStar AStar;
+
+	auto getCost = [](const GridBasedGraph::Node* node, const GridBasedGraph::Node* neighbour)
+	{
+		if (node->column != neighbour->column && node->row != neighbour->row)
+		{
+			return 1.5f;
+		}
+
+		return 1.0f;
+	};
+
+	auto getHeuristic = [](const GridBasedGraph::Node* neighbour, const GridBasedGraph::Node* endNode)
+	{
+		float D = 1.0f;
+		float dx = abs(neighbour->column - endNode->column);
+		float dy = abs(neighbour->row - endNode->row);
+
+		return D * (dx + dy);
+	};
+
+	if (AStar.Run(mGraph, startX, startY, endX, endY, getCost, getHeuristic))
+	{
+		const auto& closedList = AStar.GetClosedList();
 		auto node = closedList.back();
 		while (node != nullptr)
 		{

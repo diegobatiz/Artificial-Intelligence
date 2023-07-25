@@ -1,10 +1,10 @@
 #pragma once
 #include "Precompiled.h"
-#include "Dijkstra.h"
+#include "AStar.h"
 
 using namespace AI;
 
-bool AI::Dijkstra::Run(GridBasedGraph& graph, int startX, int startY, int endX, int endY, GetCost getCost)
+bool AStar::Run(GridBasedGraph& graph, int startX, int startY, int endX, int endY, GetCost getCost, GetHeuristic getHeuristic)
 {
 	graph.ResetSearchParams();
 	mOpenList.clear();
@@ -13,6 +13,8 @@ bool AI::Dijkstra::Run(GridBasedGraph& graph, int startX, int startY, int endX, 
 	auto node = graph.GetNode(startX, startY);
 	mOpenList.push_back(node);
 	node->opened = true;
+
+	auto endNode = graph.GetNode(endX, endY);
 
 	bool found = false;
 
@@ -38,10 +40,11 @@ bool AI::Dijkstra::Run(GridBasedGraph& graph, int startX, int startY, int endX, 
 				int cost = node->cost + getCost(node, neighbour);
 				if (!neighbour->opened)
 				{
-					mOpenList.push_back(neighbour);
 					neighbour->opened = true;
 					neighbour->parent = node;
 					neighbour->cost = cost;
+					neighbour->heuristic = getHeuristic(neighbour, endNode);
+					mOpenList.push_back(neighbour);
 				}
 				else if (cost < neighbour->cost)
 				{
@@ -52,6 +55,10 @@ bool AI::Dijkstra::Run(GridBasedGraph& graph, int startX, int startY, int endX, 
 		}
 		auto sortCost = [&](const GridBasedGraph::Node* a, const GridBasedGraph::Node* b)
 		{
+			if (a->cost == b->cost)
+			{
+				return a->heuristic < b->heuristic;
+			}
 			return a->cost < b->cost;
 		};
 		mOpenList.sort(sortCost);

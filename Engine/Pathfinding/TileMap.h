@@ -22,7 +22,9 @@ public:
 	bool IsBlocked(int x, int y) const;
 
 	Path FindPathBFS(int startX, int startY, int endX, int endY);
+	Path FindPathDFS(int startX, int startY, int endX, int endY);
 	Path FindPathDijkstra(int startX, int startY, int endX, int endY);
+	Path FindPathAStar(int startX, int startY, int endX, int endY);
 
 	int GetColumns() const { return mColumns; }
 	int GetRows() const { return mRows; }
