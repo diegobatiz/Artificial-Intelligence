@@ -216,7 +216,7 @@ Path TileMap::FindPathDijkstra(int startX, int startY, int endX, int endY)
 	return path;
 }
 
-Path TileMap::FindPathAStar(int startX, int startY, int endX, int endY)
+Path TileMap::FindPathAStarManhattan(int startX, int startY, int endX, int endY)
 {
 	Path path;
 	AStar AStar;
@@ -238,6 +238,83 @@ Path TileMap::FindPathAStar(int startX, int startY, int endX, int endY)
 		float dy = abs(neighbour->row - endNode->row);
 
 		return D * (dx + dy);
+	};
+
+	if (AStar.Run(mGraph, startX, startY, endX, endY, getCost, getHeuristic))
+	{
+		const auto& closedList = AStar.GetClosedList();
+		auto node = closedList.back();
+		while (node != nullptr)
+		{
+			path.push_back(GetPixelPosition(node->column, node->row));
+			node = node->parent;
+		}
+		std::reverse(path.begin(), path.end());
+	}
+	return path;
+}
+
+Path TileMap::FindPathAStarDiagonal(int startX, int startY, int endX, int endY)
+{
+	Path path;
+	AStar AStar;
+
+	auto getCost = [](const GridBasedGraph::Node* node, const GridBasedGraph::Node* neighbour)
+	{
+		if (node->column != neighbour->column && node->row != neighbour->row)
+		{
+			return 1.5f;
+		}
+
+		return 1.0f;
+	};
+
+	auto getHeuristic = [](const GridBasedGraph::Node* neighbour, const GridBasedGraph::Node* endNode)
+	{
+		float D = 1.0f;
+		float D2 = 1.5f;
+		float dx = abs(neighbour->column - endNode->column);
+		float dy = abs(neighbour->row - endNode->row);
+
+		return D * std::max(dx, dy) + (D2 - D) * std::min(dx, dy);
+	};
+
+	if (AStar.Run(mGraph, startX, startY, endX, endY, getCost, getHeuristic))
+	{
+		const auto& closedList = AStar.GetClosedList();
+		auto node = closedList.back();
+		while (node != nullptr)
+		{
+			path.push_back(GetPixelPosition(node->column, node->row));
+			node = node->parent;
+		}
+		std::reverse(path.begin(), path.end());
+	}
+	return path;
+}
+
+Path TileMap::FindPathAStarEuclidean(int startX, int startY, int endX, int endY)
+{
+	Path path;
+	AStar AStar;
+
+	auto getCost = [](const GridBasedGraph::Node* node, const GridBasedGraph::Node* neighbour)
+	{
+		if (node->column != neighbour->column && node->row != neighbour->row)
+		{
+			return 1.5f;
+		}
+
+		return 1.0f;
+	};
+
+	auto getHeuristic = [](const GridBasedGraph::Node* neighbour, const GridBasedGraph::Node* endNode)
+	{
+		float D = 1.0f;
+		float dx = abs(neighbour->column - endNode->column);
+		float dy = abs(neighbour->row - endNode->row);
+
+		return D * std::sqrt(dx * dx + dy * dy);
 	};
 
 	if (AStar.Run(mGraph, startX, startY, endX, endY, getCost, getHeuristic))

@@ -40,11 +40,18 @@ bool AStar::Run(GridBasedGraph& graph, int startX, int startY, int endX, int end
 				int cost = node->cost + getCost(node, neighbour);
 				if (!neighbour->opened)
 				{
+					for (NodeList::iterator it = mOpenList.begin(); it != mOpenList.end(); ++it)
+					{
+						if ((*it)->cost > cost)
+						{
+							mOpenList.insert(it, neighbour);
+						}
+					}
+					mOpenList.push_back(neighbour);
 					neighbour->opened = true;
 					neighbour->parent = node;
 					neighbour->cost = cost;
 					neighbour->heuristic = getHeuristic(neighbour, endNode);
-					mOpenList.push_back(neighbour);
 				}
 				else if (cost < neighbour->cost)
 				{

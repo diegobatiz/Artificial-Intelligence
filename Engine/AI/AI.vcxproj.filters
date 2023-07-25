@@ -36,6 +36,9 @@
     <ClInclude Include="Inc\DFS.h">
       <Filter>Inc\Pathing</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\AStar.h">
+      <Filter>Inc\Pathing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -51,6 +54,9 @@
       <Filter>Src\Pathing</Filter>
     </ClCompile>
     <ClCompile Include="Src\DFS.cpp">
+      <Filter>Src\Pathing</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\AStar.cpp">
       <Filter>Src\Pathing</Filter>
     </ClCompile>
   </ItemGroup>

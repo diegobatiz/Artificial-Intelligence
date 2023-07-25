@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Inc\AI.h" />
+    <ClInclude Include="Inc\AStar.h" />
     <ClInclude Include="Inc\BFS.h" />
     <ClInclude Include="Inc\Common.h" />
     <ClInclude Include="Inc\DFS.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Src\Precompiled.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\AStar.cpp" />
     <ClCompile Include="Src\BFS.cpp" />
     <ClCompile Include="Src\DFS.cpp" />
     <ClCompile Include="Src\Dijkstra.cpp" />
