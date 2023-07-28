@@ -135,6 +135,19 @@ void TileMap::Render() const
 			}
 		}
 	}
+	for (int r = 0; r < mRows; r++)
+	{
+		for (int c = 0; c < mColumns; c++)
+		{
+			const auto node = mGraph.GetNode(c, r);
+			if (node->parent != nullptr)
+			{
+				const auto a = GetPixelPosition(node->column, node->row);
+				const auto b = GetPixelPosition(node->parent->column, node->parent->row);
+				X::DrawScreenLine(a, b, X::Colors::Yellow);
+			}
+		}
+	}
 }
 
 bool TileMap::IsBlocked(int x, int y) const
@@ -225,7 +238,7 @@ Path TileMap::FindPathAStarManhattan(int startX, int startY, int endX, int endY)
 	{
 		if (node->column != neighbour->column && node->row != neighbour->row)
 		{
-			return 1.5f;
+			return 1.0f;
 		}
 
 		return 1.0f;
@@ -263,7 +276,7 @@ Path TileMap::FindPathAStarDiagonal(int startX, int startY, int endX, int endY)
 	{
 		if (node->column != neighbour->column && node->row != neighbour->row)
 		{
-			return 1.5f;
+			return 1.0f;
 		}
 
 		return 1.0f;
@@ -272,7 +285,7 @@ Path TileMap::FindPathAStarDiagonal(int startX, int startY, int endX, int endY)
 	auto getHeuristic = [](const GridBasedGraph::Node* neighbour, const GridBasedGraph::Node* endNode)
 	{
 		float D = 1.0f;
-		float D2 = 1.5f;
+		float D2 = 1.0f;
 		float dx = abs(neighbour->column - endNode->column);
 		float dy = abs(neighbour->row - endNode->row);
 
@@ -302,7 +315,7 @@ Path TileMap::FindPathAStarEuclidean(int startX, int startY, int endX, int endY)
 	{
 		if (node->column != neighbour->column && node->row != neighbour->row)
 		{
-			return 1.5f;
+			return 1.0f;
 		}
 
 		return 1.0f;

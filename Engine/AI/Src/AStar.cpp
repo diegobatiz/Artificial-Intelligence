@@ -40,13 +40,6 @@ bool AStar::Run(GridBasedGraph& graph, int startX, int startY, int endX, int end
 				int cost = node->cost + getCost(node, neighbour);
 				if (!neighbour->opened)
 				{
-					for (NodeList::iterator it = mOpenList.begin(); it != mOpenList.end(); ++it)
-					{
-						if ((*it)->cost > cost)
-						{
-							mOpenList.insert(it, neighbour);
-						}
-					}
 					mOpenList.push_back(neighbour);
 					neighbour->opened = true;
 					neighbour->parent = node;
@@ -62,11 +55,7 @@ bool AStar::Run(GridBasedGraph& graph, int startX, int startY, int endX, int end
 		}
 		auto sortCost = [&](const GridBasedGraph::Node* a, const GridBasedGraph::Node* b)
 		{
-			if (a->cost == b->cost)
-			{
-				return a->heuristic < b->heuristic;
-			}
-			return a->cost < b->cost;
+			return a->cost + a->heuristic  < b->heuristic + b->cost;
 		};
 		mOpenList.sort(sortCost);
 		mClosedList.push_back(node);

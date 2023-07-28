@@ -13,6 +13,12 @@
     <Filter Include="Src\Pathing">
       <UniqueIdentifier>{9e83c0ae-8239-440a-acf6-cf76cf06c8f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Inc\FSM">
+      <UniqueIdentifier>{ad0f3eb8-a492-4d6b-b40c-6ab5a7080e45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\FSM">
+      <UniqueIdentifier>{f925fdbb-910a-4030-8895-956f8128921c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\AI.h">
@@ -39,6 +45,12 @@
     <ClInclude Include="Inc\AStar.h">
       <Filter>Inc\Pathing</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\State.h">
+      <Filter>Inc\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\StateMachine.h">
+      <Filter>Inc\FSM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -58,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="Src\AStar.cpp">
       <Filter>Src\Pathing</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\StateMachine.cpp">
+      <Filter>Src\FSM</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
