@@ -10,7 +10,7 @@ namespace AI
 		StateMachine(AgentType& agent)
 			: mAgent(agent)
 		{
-
+			
 		}
 
 		template <class NewState>
@@ -23,16 +23,24 @@ namespace AI
 		{
 			if (mCurrentState != nullptr)
 			{
-				mCurrentState->Update();
+				mCurrentState->Update(mAgent, deltaTime);
 			}
-		}
-		void ChangeState(int index)
-		{
 			
 		}
+
+		void ChangeState(int index)
+		{
+			if (mCurrentState != nullptr)
+			{
+				mCurrentState->Exit(mAgent);
+			}
+			mCurrentState = mStates[index].get();
+			mCurrentState->Enter(mAgent);
+		}
+
 	private:
 		AgentType& mAgent;
-		State mCurrentState = nullptr;
-		std::vector<std::unique_ptr<State>> mStates;
+		State<AgentType>* mCurrentState = nullptr;
+		std::vector<std::unique_ptr<State<AgentType>> mStates;
 	};
 }

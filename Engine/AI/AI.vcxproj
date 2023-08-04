@@ -167,7 +167,6 @@
     <ClCompile Include="Src\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Src\StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\X\X.vcxproj">

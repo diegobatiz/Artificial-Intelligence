@@ -71,8 +71,5 @@
     <ClCompile Include="Src\AStar.cpp">
       <Filter>Src\Pathing</Filter>
     </ClCompile>
-    <ClCompile Include="Src\StateMachine.cpp">
-      <Filter>Src\FSM</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
