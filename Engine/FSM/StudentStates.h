@@ -12,9 +12,9 @@ class SleepingState : public AI::State<Student>
 
 	void Update(Student& agent, float deltaTime) override
 	{
-		agent.IncreaseHunger();
-		agent.IncreaseEffort();
-		agent.DecreaseFatigue();
+		agent.IncreaseHunger(deltaTime);
+		agent.IncreaseEffort(deltaTime);
+		agent.DecreaseFatigue(deltaTime);
 		if (agent.IsHungry())
 		{
 			agent.ChangeState(StudentState::Eating);
@@ -40,23 +40,26 @@ class EatingState : public AI::State<Student>
 
 	void Update(Student& agent, float deltaTime) override
 	{
-		agent.DecreaseHunger();
+		agent.DecreaseHunger(deltaTime);
 
-		if (agent.GetLocation() == Student::Location::Bed)
+		if (agent.IsFull())
 		{
-			agent.ChangeState(StudentState::Sleeping);
-		}
-		else if (agent.GetLocation() == Student::Location::Car)
-		{
-			agent.ChangeState(StudentState::Driving);
-		}
-		else if (agent.GetLocation() == Student::Location::School)
-		{
-			agent.ChangeState(StudentState::Studying);
-		}
-		else if (agent.GetLocation() == Student::Location::Party)
-		{
-			agent.ChangeState(StudentState::Partying);
+			if (agent.GetLocation() == Student::Location::Bed)
+			{
+				agent.ChangeState(StudentState::Sleeping);
+			}
+			else if (agent.GetLocation() == Student::Location::Car)
+			{
+				agent.ChangeState(StudentState::Driving);
+			}
+			else if (agent.GetLocation() == Student::Location::School)
+			{
+				agent.ChangeState(StudentState::Studying);
+			}
+			else if (agent.GetLocation() == Student::Location::Party)
+			{
+				agent.ChangeState(StudentState::Partying);
+			}
 		}
 	}
 
@@ -75,9 +78,9 @@ class DrivingState : public AI::State<Student>
 
 	void Update(Student& agent, float deltaTime) override
 	{
-		agent.IncreaseHunger();
-		agent.IncreaseFatigue();
-		agent.IncreaseBoredom();
+		agent.IncreaseHunger(deltaTime);
+		agent.IncreaseFatigue(deltaTime);
+		agent.IncreaseBoredom(deltaTime);
 		if (agent.IsTired())
 		{
 			agent.ChangeState(StudentState::Sleeping);
@@ -111,10 +114,10 @@ class StudyingState : public AI::State<Student>
 
 	void Update(Student& agent, float deltaTime) override
 	{
-		agent.IncreaseHunger();
-		agent.IncreaseFatigue();
-		agent.IncreaseBoredom();
-		agent.DecreaseEffort();
+		agent.IncreaseHunger(deltaTime);
+		agent.IncreaseFatigue(deltaTime);
+		agent.IncreaseBoredom(deltaTime);
+		agent.DecreaseEffort(deltaTime);
 		if (agent.IsTired())
 		{
 			agent.ChangeState(StudentState::Driving);
@@ -140,10 +143,10 @@ class PartyingState : public AI::State<Student>
 
 	void Update(Student& agent, float deltaTime) override
 	{
-		agent.IncreaseHunger();
-		agent.IncreaseFatigue();
-		agent.IncreaseEffort();
-		agent.DecreaseBoredom();
+		agent.IncreaseHunger(deltaTime);
+		agent.IncreaseFatigue(deltaTime);
+		agent.IncreaseEffort(deltaTime);
+		agent.DecreaseBoredom(deltaTime);
 		if (agent.IsTired())
 		{
 			agent.ChangeState(StudentState::Driving);

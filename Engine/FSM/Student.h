@@ -40,20 +40,20 @@ public:
 
 	//Action Functions
 	void SetLocation(Location location);
-	void IncreaseHunger();
-	void DecreaseHunger();
-	void IncreaseEffort();
-	void DecreaseEffort();
-	void IncreaseBoredom();
-	void DecreaseBoredom();
-	void IncreaseFatigue();
-	void DecreaseFatigue();
+	void IncreaseHunger(float deltaTime);
+	void DecreaseHunger(float deltaTime);
+	void IncreaseEffort(float deltaTime);
+	void DecreaseEffort(float deltaTime);
+	void IncreaseBoredom(float deltaTime);
+	void DecreaseBoredom(float deltaTime);
+	void IncreaseFatigue(float deltaTime);
+	void DecreaseFatigue(float deltaTime);
 
 private:
 	AI::StateMachine<StudentState> mStateMachine;
 	Location mLocation;
-	int mHunger;
-	int mEffort;
-	int mBoredom;
-	int mTired;
+	float mHunger;
+	float mEffort;
+	float mBoredom;
+	float mTired;
 };

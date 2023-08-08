@@ -26,71 +26,80 @@ void Student::ChangeState(StudentState pNewState)
 
 Student::Location Student::GetLocation()
 {
-	return Location();
+	return mLocation;
 }
 
 bool Student::IsHungry() const
 {
-	return false;
+	return mHunger > 10.0f;
 }
 
 bool Student::IsFull() const
 {
-	return false;
+	return mHunger <= 0.0f;
 }
 
 bool Student::HasEffort() const
 {
-	return false;
+	return mEffort > 15.0f && mEffort > mBoredom;
 }
 
 bool Student::IsBored() const
 {
-	return false;
+	return mBoredom > 8.0f&& mBoredom > mEffort;
 }
 
 bool Student::IsRested() const
 {
-	return false;
+	return mTired <= 0.0f;
 }
 
 bool Student::IsTired() const
 {
-	return false;
+	return mTired > 12.0f;
 }
 
 void Student::SetLocation(Location location)
 {
+	mLocation = location;
 }
 
-void Student::IncreaseHunger()
+void Student::IncreaseHunger(float deltaTime)
 {
+	mHunger += deltaTime;
 }
 
-void Student::DecreaseHunger()
+void Student::DecreaseHunger(float deltaTime)
 {
+	mHunger -= deltaTime;
 }
 
-void Student::IncreaseEffort()
+void Student::IncreaseEffort(float deltaTime)
 {
+	mEffort += deltaTime / 2.0f;
 }
 
-void Student::DecreaseEffort()
+void Student::DecreaseEffort(float deltaTime)
 {
+	mEffort += deltaTime * 2.0f;
 }
 
-void Student::IncreaseBoredom()
+void Student::IncreaseBoredom(float deltaTime)
 {
+	mBoredom += deltaTime * 2.0f;
 }
 
-void Student::DecreaseBoredom()
+void Student::DecreaseBoredom(float deltaTime)
 {
+	mBoredom += deltaTime / 2.0f;
 }
 
-void Student::IncreaseFatigue()
+void Student::IncreaseFatigue(float deltaTime)
 {
+	mTired += deltaTime;
 }
 
-void Student::DecreaseFatigue()
+void Student::DecreaseFatigue(float deltaTime)
 {
+	mTired -= deltaTime;
 }
