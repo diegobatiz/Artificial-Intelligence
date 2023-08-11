@@ -16,3 +16,7 @@
 #include "AIWorld.h"
 #include "Entity.h"
 #include "Agent.h"
+
+//Steering
+#include "SteeringBehaviour.h"
+#include "SteeringModule.h"
