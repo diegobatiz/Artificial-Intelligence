@@ -16,7 +16,7 @@ namespace AI
 		template <class NewState>
 		void AddState()
 		{
-			static_assert(std::is_base_of_v<State, NewState>, "StateMachine: can onlt add state of same type");
+			static_assert(std::is_base_of_v<State<AgentType>, NewState>, "StateMachine: can onlt add state of same type");
 			mStates.push_back(std::make_unique<NewState>());
 		}
 		void Update(float deltaTime)
@@ -38,9 +38,17 @@ namespace AI
 			mCurrentState->Enter(mAgent);
 		}
 
+		void DebugUI()
+		{
+			if (mCurrentState != nullptr)
+			{
+				mCurrentState->DebugUI();
+			}
+		}
+
 	private:
 		AgentType& mAgent;
 		State<AgentType>* mCurrentState = nullptr;
-		std::vector<std::unique_ptr<State<AgentType>> mStates;
+		std::vector<std::unique_ptr<State<AgentType>>> mStates;
 	};
 }

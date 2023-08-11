@@ -1,21 +1,23 @@
 #include <XEngine.h> // <> for external includes, "" for internal includes
 #include <ImGui/Inc/imgui.h>
-
-int startX = 0;
-int startY = 0;
-int endX = 0;
-int endY = 0;
+#include "Student.h"
 
 //--------------------------------------------------
+Student student;
+
 
 void GameInit()
 {
+	student.Initialize();
 }
 
 bool GameLoop(float deltaTime)
 {
+
+	student.Update(deltaTime);
+
 	ImGui::Begin("FSM");
-	
+	student.DebugUI();
 	ImGui::End();
 
 

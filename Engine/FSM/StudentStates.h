@@ -1,6 +1,6 @@
 #pragma once
-#include "AI.h"
-
+#include <AI.h>
+#include <ImGui/Inc/imgui.h>
 #include "Student.h"
 
 class SleepingState : public AI::State<Student>
@@ -28,6 +28,11 @@ class SleepingState : public AI::State<Student>
 	void Exit(Student& agent) override
 	{
 
+	}
+
+	void DebugUI() override
+	{
+		ImGui::Text("Student is sleeping");
 	}
 };
 
@@ -67,6 +72,11 @@ class EatingState : public AI::State<Student>
 	{
 
 	}
+
+	void DebugUI() override
+	{
+		ImGui::Text("Student is eating");
+	}
 };
 
 class DrivingState : public AI::State<Student>
@@ -103,6 +113,11 @@ class DrivingState : public AI::State<Student>
 	{
 
 	}
+
+	void DebugUI() override
+	{
+		ImGui::Text("Student is driving");
+	}
 };
 
 class StudyingState : public AI::State<Student>
@@ -132,6 +147,11 @@ class StudyingState : public AI::State<Student>
 	{
 
 	}
+
+	void DebugUI() override
+	{
+		ImGui::Text("Student is studying");
+	}
 };
 
 class PartyingState : public AI::State<Student>
@@ -160,5 +180,10 @@ class PartyingState : public AI::State<Student>
 	void Exit(Student& agent) override
 	{
 
+	}
+
+	void DebugUI() override
+	{
+		ImGui::Text("Student is partying");
 	}
 };

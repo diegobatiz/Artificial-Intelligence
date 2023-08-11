@@ -1,4 +1,5 @@
 #include "Student.h"
+#include "StudentStates.h"
 
 
 void Student::Initialize()
@@ -8,20 +9,35 @@ void Student::Initialize()
 	mEffort = 0;
 	mBoredom = 0;
 	mTired = 0;
+
+	mStateMachine = new AI::StateMachine<Student>(*this);
+	mStateMachine->AddState<SleepingState>();
+	mStateMachine->AddState<EatingState>();
+	mStateMachine->AddState<DrivingState>();
+	mStateMachine->AddState<StudyingState>();
+	mStateMachine->AddState<PartyingState>();
+	mStateMachine->ChangeState(0);
 }
 
 void Student::Terminate()
 {
+	delete mStateMachine;
+	mStateMachine = nullptr;
 }
 
 void Student::Update(float deltaTime)
 {
-	mStateMachine.Update(deltaTime);
+	mStateMachine->Update(deltaTime);
 }
 
 void Student::ChangeState(StudentState pNewState)
 {
-	mStateMachine.ChangeState((int)pNewState);
+	mStateMachine->ChangeState((int)pNewState);
+}
+
+void Student::DebugUI()
+{
+	mStateMachine->DebugUI();
 }
 
 Student::Location Student::GetLocation()

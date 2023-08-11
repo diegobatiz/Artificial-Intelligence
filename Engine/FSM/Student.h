@@ -1,9 +1,7 @@
 #pragma once
 #include <AI.h>
-#include "StudentStates.h"
 
-
-enum StudentState
+enum class StudentState
 {
 	Sleeping,
 	Eating,
@@ -23,11 +21,12 @@ public:
 		Party
 	};
 
-	Student();
+	Student() = default;
 	void Initialize();
 	void Terminate();
 	void Update(float deltaTime);
 	void ChangeState(StudentState pNewState);
+	void DebugUI();
 
 	//CheckState
 	Location GetLocation();
@@ -50,7 +49,7 @@ public:
 	void DecreaseFatigue(float deltaTime);
 
 private:
-	AI::StateMachine<StudentState> mStateMachine;
+	AI::StateMachine<Student>* mStateMachine;
 	Location mLocation;
 	float mHunger;
 	float mEffort;
