@@ -17,5 +17,8 @@ public:
 
 private:
 	std::unique_ptr<AI::SteeringModule> mSteeringModule;
+	AI::WanderBehaviour* mWanderBehaviour = nullptr;
+	AI::SeekBehaviour* mSeekBehaviour = nullptr;
+	AI::FleeBehaviour* mFleeBehaviour = nullptr;
 	std::array<X::TextureId, 16> mTextureIds{};
 };

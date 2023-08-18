@@ -20,3 +20,7 @@
 //Steering
 #include "SteeringBehaviour.h"
 #include "SteeringModule.h"
+
+#include "WanderBehaviour.h"
+#include "SeekBehaviour.h"
+#include "ArriveBehaviour.h"

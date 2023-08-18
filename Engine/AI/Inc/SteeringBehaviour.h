@@ -17,10 +17,10 @@ namespace AI
 		float GetWeight() const { return mWeight; }
 
 		void SetActive(bool active) { mActive = active; }
-		bool GetActive() const { return mActive; }
+		bool IsActive() const { return mActive; }
 
-		void ShowDebug(bool debug) { mDebug = debug; }
-		bool IsDebug() const { return mDebug; }
+		void IsDebug(bool debug) { mDebug = debug; }
+		bool GetDebug() const { return mDebug; }
 
 	private:
 		float mWeight = 1.0f;
