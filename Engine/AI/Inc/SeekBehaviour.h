@@ -15,6 +15,6 @@ namespace AI
 		X::Math::Vector2 Calculate(Agent& agent) override;
 
 	private:
-		float panicDistance = 100.0f;
+		float panicDistance = 300.0f;
 	};
 }

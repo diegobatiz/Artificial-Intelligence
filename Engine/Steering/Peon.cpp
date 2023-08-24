@@ -17,6 +17,7 @@ void Peon::Load()
 	mSeekBehaviour = mSteeringModule->AddNewBehaviour<AI::SeekBehaviour>();
 	mWanderBehaviour = mSteeringModule->AddNewBehaviour<AI::WanderBehaviour>();
 	mFleeBehaviour = mSteeringModule->AddNewBehaviour<AI::FleeBehaviour>();
+	mArriveBehaviour = mSteeringModule->AddNewBehaviour<AI::ArriveBehaviour>();
 	
 	mWanderBehaviour->SetActive(true);
 
@@ -80,6 +81,7 @@ void Peon::Render()
 
 void Peon::ShowDebug(bool debug)
 {
+	mArriveBehaviour->IsDebug(debug);
 	mFleeBehaviour->IsDebug(debug);
 	mWanderBehaviour->IsDebug(debug);
 	mSeekBehaviour->IsDebug(debug);

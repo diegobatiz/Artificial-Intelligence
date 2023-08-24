@@ -6,11 +6,14 @@
 
 AI::AIWorld aiWorld;
 std::vector<std::unique_ptr<Peon>> peons;
+Peon targetPeon(aiWorld);
 
 bool showDebug = false;
 float wanderJitter = 5.0f;
 float wanderRadius = 20.0f;
 float wanderDistance = 50.0f;
+
+int activeBehaviour = 0;
 
 AI::ArriveBehaviour::Deacceleration deacceleration = AI::ArriveBehaviour::Deacceleration::Normal;
 
@@ -19,10 +22,11 @@ void SpawnPeon()
 	auto& peon = peons.emplace_back(std::make_unique<Peon>(aiWorld));
 	peon->Load();
 	peon->ShowDebug(showDebug);
+	peon->target = &targetPeon;
 
-	const float halfScreenWidth = X::GetScreenWidth() * 0.5f;
-	const float halfScreenHeight = X::GetScreenHeight() * 0.5f;
-	peon->position = X::RandomVector2({ 100.0f, 100.0f }, { halfScreenWidth - 100.0f, halfScreenHeight - 100.0f });
+	const float screenWidth = X::GetScreenWidth();
+	const float screenHeight = X::GetScreenHeight();
+	peon->position = X::RandomVector2({ 100.0f, 100.0f }, { screenWidth - 100.0f, screenHeight - 100.0f });
 	}
 
 void KillPeon()
@@ -35,6 +39,11 @@ void KillPeon()
 void GameInit()
 {
 	aiWorld.Initialize();
+
+	targetPeon.Load();
+	targetPeon.SetWander(true);
+	targetPeon.SetFlee(false);
+	targetPeon.SetSeek(false);
 	SpawnPeon();
 }
 
@@ -57,20 +66,56 @@ bool GameLoop(float deltaTime)
 		}
 	}
 
+
+	const char* behaviours[] =
+	{
+		"Arrive",
+		"Flee",
+		"Seek",
+		"Wander"
+	};
+	if (ImGui::Combo("ActiveBehviour##", &activeBehaviour, behaviours, std::size(behaviours)))
+	{
+		for (auto& peon : peons)
+		{
+			peon->SetArrive(activeBehaviour == 0);
+			peon->SetFlee(activeBehaviour == 1);
+			peon->SetSeek(activeBehaviour == 2);
+			peon->SetWander(activeBehaviour == 3);
+		}
+	}
+
 	if (ImGui::CollapsingHeader("Wander##Settings", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::DragFloat("Jitter##", &wanderJitter, 0.1f, 0.1f, 10.0f);
 		ImGui::DragFloat("Radius##", &wanderRadius, 0.1f, 0.1f, 100.0f);
 		ImGui::DragFloat("Distance##", &wanderDistance, 0.1f, 0.1f, 100.0f);
 	}
+	if (ImGui::CollapsingHeader("Arrive##Settings", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		const char* deaccelerationSpeed[] =
+		{
+			"Fast",
+			"Normal",
+			"Slow"
+		};
+		int deaccel = static_cast<int>(deacceleration);
+		if (ImGui::Combo("Deacceleration#", &deaccel, deaccelerationSpeed, std::size(deaccelerationSpeed)))
+		{
+			for (auto& peon : peons)
+			{
+				deacceleration = static_cast<AI::ArriveBehaviour::Deacceleration>(deaccel);
+			}
+		}
+	}
 
 	ImGui::End();
 
 	if (X::IsMousePressed(X::Mouse::LBUTTON))
 	{
-		const auto MouseX = static_cast<float>(X::GetMouseScreenX());
-		const auto MouseY = static_cast<float>(X::GetMouseScreenX());
-		const auto destination = X::Math::Vector2(MouseX, MouseY);
+		const auto mouseX = static_cast<float>(X::GetMouseScreenX());
+		const auto mouseY = static_cast<float>(X::GetMouseScreenY());
+		const auto destination = X::Math::Vector2(mouseX, mouseY);
 		for (auto& peon : peons)
 		{ 
 			peon->destination = destination;
@@ -83,10 +128,12 @@ bool GameLoop(float deltaTime)
 	{
 		peon->Update(deltaTime);
 	}
+	targetPeon.Update(deltaTime);
 	for (auto& peon : peons)
 	{
 		peon->Render();
 	}
+	targetPeon.Render();
 
 	
 	const bool quit = X::IsKeyPressed(X::Keys::ESCAPE);
@@ -95,6 +142,7 @@ bool GameLoop(float deltaTime)
 
 void GameCleanup()
 {
+	targetPeon.Unload();
 	for (auto& peon : peons)
 	{
 		peon->Unload();

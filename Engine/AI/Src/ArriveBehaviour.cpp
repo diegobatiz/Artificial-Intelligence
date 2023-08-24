@@ -12,7 +12,7 @@ X::Math::Vector2 AI::ArriveBehaviour::Calculate(Agent& agent)
 	const float distToDest = X::Math::Magnitude(agentToDest);
 	float speed = 0.0f;
 
-	if (distToDest > 0.1f)
+	if (distToDest > 1.0f)
 	{
 		const float deaccelTweaker = agent.mass * 1.5f;
 		speed = distToDest / ((float)deacceleration + 1.0f) * deaccelTweaker;
