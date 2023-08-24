@@ -18,11 +18,11 @@ X::Math::Vector2 AI::WanderBehaviour::Calculate(Agent& agent)
 
 	//transform target into world space
 	const auto worldTransform = agent.GetWorldTransform();
-	const auto worldWanderTarget = X::Math::TransformCoord(newWanderTarget, worldTransform);
+	agent.destination = X::Math::TransformCoord(newWanderTarget, worldTransform);
 
 
 	//check if at target
-	const auto agentDist = worldWanderTarget - agent.position;
+	const auto agentDist = agent.destination - agent.position;
 	const float distToDest = X::Math::Magnitude(agentDist);
 	if (distToDest <= 0.01f)
 	{
@@ -37,8 +37,8 @@ X::Math::Vector2 AI::WanderBehaviour::Calculate(Agent& agent)
 	{
 		const auto wanderCenter = X::Math::TransformCoord({ 0.0f, mWanderDistance }, worldTransform);
 		X::DrawScreenCircle(wanderCenter, mWanderRadius, X::Colors::Yellow);
-		X::DrawScreenDiamond(worldWanderTarget, 3.0f, X::Colors::Red);
-		X::DrawScreenLine(agent.position, worldWanderTarget, X::Colors::Green);
+		X::DrawScreenDiamond(agent.destination, 3.0f, X::Colors::Red);
+		X::DrawScreenLine(agent.position, agent.destination, X::Colors::Green);
 	}
 
 	return seekForce;

@@ -157,7 +157,9 @@
     <ClInclude Include="Inc\DFS.h" />
     <ClInclude Include="Inc\Dijkstra.h" />
     <ClInclude Include="Inc\Entity.h" />
+    <ClInclude Include="Inc\EvadeBehaviour.h" />
     <ClInclude Include="Inc\GridBasedGraph.h" />
+    <ClInclude Include="Inc\PursuitBehaviour.h" />
     <ClInclude Include="Inc\SeekBehaviour.h" />
     <ClInclude Include="Inc\State.h" />
     <ClInclude Include="Inc\StateMachine.h" />
@@ -175,10 +177,12 @@
     <ClCompile Include="Src\DFS.cpp" />
     <ClCompile Include="Src\Dijkstra.cpp" />
     <ClCompile Include="Src\Entity.cpp" />
+    <ClCompile Include="Src\EvadeBehaviour.cpp" />
     <ClCompile Include="Src\GridBasedGraph.cpp" />
     <ClCompile Include="Src\Precompiled.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\PursuitBehaviour.cpp" />
     <ClCompile Include="Src\SeekBehaviour.cpp" />
     <ClCompile Include="Src\SteeringModule.cpp" />
     <ClCompile Include="Src\WanderBehaviour.cpp" />

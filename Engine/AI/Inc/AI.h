@@ -24,3 +24,5 @@
 #include "WanderBehaviour.h"
 #include "SeekBehaviour.h"
 #include "ArriveBehaviour.h"
+#include "PursuitBehaviour.h"
+#include "EvadeBehaviour.h"

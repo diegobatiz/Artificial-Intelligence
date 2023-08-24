@@ -72,7 +72,9 @@ bool GameLoop(float deltaTime)
 		"Arrive",
 		"Flee",
 		"Seek",
-		"Wander"
+		"Wander",
+		"Pursuit",
+		"Evade"
 	};
 	if (ImGui::Combo("ActiveBehviour##", &activeBehaviour, behaviours, std::size(behaviours)))
 	{
@@ -82,6 +84,8 @@ bool GameLoop(float deltaTime)
 			peon->SetFlee(activeBehaviour == 1);
 			peon->SetSeek(activeBehaviour == 2);
 			peon->SetWander(activeBehaviour == 3);
+			peon->SetPursuit(activeBehaviour == 4);
+			peon->SetEvade(activeBehaviour == 5);
 		}
 	}
 

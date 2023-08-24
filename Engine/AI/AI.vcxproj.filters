@@ -81,6 +81,12 @@
     <ClInclude Include="Inc\ArriveBehaviour.h">
       <Filter>Inc\Steering</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\PursuitBehaviour.h">
+      <Filter>Inc\Steering</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\EvadeBehaviour.h">
+      <Filter>Inc\Steering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -120,6 +126,12 @@
       <Filter>Src\Steering</Filter>
     </ClCompile>
     <ClCompile Include="Src\ArriveBehaviour.cpp">
+      <Filter>Src\Steering</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PursuitBehaviour.cpp">
+      <Filter>Src\Steering</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EvadeBehaviour.cpp">
       <Filter>Src\Steering</Filter>
     </ClCompile>
   </ItemGroup>
