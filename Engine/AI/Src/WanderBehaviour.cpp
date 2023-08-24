@@ -13,9 +13,13 @@ X::Math::Vector2 AI::WanderBehaviour::Calculate(Agent& agent)
 	newWanderTarget = X::Math::Normalize(newWanderTarget) * mWanderRadius;
 	mLocalWanderTarget = newWanderTarget;
 
+	//project target into world space
+	newWanderTarget += X::Math::Vector2(0.0f, mWanderDistance);
+
 	//transform target into world space
 	const auto worldTransform = agent.GetWorldTransform();
 	const auto worldWanderTarget = X::Math::TransformCoord(newWanderTarget, worldTransform);
+
 
 	//check if at target
 	const auto agentDist = worldWanderTarget - agent.position;

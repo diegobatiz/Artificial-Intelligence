@@ -1,7 +1,6 @@
 #include "Peon.h"
 #include "TypeIDs.h"
 
-
 extern float wanderJitter;
 extern float wanderRadius;
 extern float wanderDistance;

@@ -14,6 +14,6 @@ namespace AI
 		X::Math::Vector2 mLocalWanderTarget = X::Math::Vector2::Zero();
 		float mWanderRadius = 1.0f;
 		float mWanderDistance = 0.0f;
-		float mWanderJitter = 0.0f;
+		float mWanderJitter = 0.1f;
 	};
 }

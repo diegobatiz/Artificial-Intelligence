@@ -49,6 +49,13 @@ bool GameLoop(float deltaTime)
 	{
 		KillPeon();
 	}
+	if (ImGui::Checkbox("ShowDebug", &showDebug))
+	{
+		for (auto& peon : peons)
+		{
+			peon->ShowDebug(showDebug);
+		}
+	}
 
 	if (ImGui::CollapsingHeader("Wander##Settings", ImGuiTreeNodeFlags_DefaultOpen))
 	{
