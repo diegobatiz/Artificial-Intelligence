@@ -12,6 +12,11 @@
 #include "State.h"
 #include "StateMachine.h"
 
+//Perception
+#include "MemoryRecord.h"
+#include "Sensor.h"
+#include "PerceptionModule.h"
+
 //AI WORLD
 #include "AIWorld.h"
 #include "Entity.h"

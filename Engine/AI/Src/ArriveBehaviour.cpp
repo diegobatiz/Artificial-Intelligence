@@ -4,7 +4,7 @@
 
 using namespace AI;
 
-extern ArriveBehaviour::Deacceleration deacceleration;
+//extern ArriveBehaviour::Deacceleration deacceleration;
 
 X::Math::Vector2 AI::ArriveBehaviour::Calculate(Agent& agent)
 {
@@ -15,7 +15,7 @@ X::Math::Vector2 AI::ArriveBehaviour::Calculate(Agent& agent)
 	if (distToDest > 1.0f)
 	{
 		const float deaccelTweaker = agent.mass * 1.5f;
-		speed = distToDest / ((float)deacceleration + 1.0f) * deaccelTweaker;
+		//speed = distToDest / ((float)deacceleration + 1.0f) * deaccelTweaker;
 		speed = X::Math::Min(speed, agent.maxSpeed);
 	}
 
