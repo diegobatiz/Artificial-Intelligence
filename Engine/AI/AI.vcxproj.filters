@@ -25,6 +25,12 @@
     <Filter Include="Src\Steering">
       <UniqueIdentifier>{78984655-5829-4c58-8322-8224d8671f9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Inc\Perception">
+      <UniqueIdentifier>{a1460f58-2ae6-42ca-9b65-980f0c4d7dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Perception">
+      <UniqueIdentifier>{25a0afda-db78-42eb-99e2-68b523fa183e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\AI.h">
@@ -87,6 +93,15 @@
     <ClInclude Include="Inc\EvadeBehaviour.h">
       <Filter>Inc\Steering</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\MemoryRecord.h">
+      <Filter>Inc\Perception</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Sensor.h">
+      <Filter>Inc\Perception</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\PerceptionModule.h">
+      <Filter>Inc\Perception</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Precompiled.cpp">
@@ -133,6 +148,12 @@
     </ClCompile>
     <ClCompile Include="Src\EvadeBehaviour.cpp">
       <Filter>Src\Steering</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MemoryRecord.cpp">
+      <Filter>Src\Perception</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PerceptionModule.cpp">
+      <Filter>Src\Perception</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
