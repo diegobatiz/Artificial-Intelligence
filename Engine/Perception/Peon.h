@@ -2,6 +2,8 @@
 
 #include <AI.h>
 
+class VisualSensor;
+
 class Peon : public AI::Agent
 {
 public:
@@ -23,5 +25,6 @@ private:
 	std::unique_ptr<AI::SteeringModule> mSteeringModule;
 	AI::WanderBehaviour* mWanderBehaviour = nullptr;
 	AI::SeekBehaviour* mSeekBehaviour = nullptr;
+	VisualSensor* mVisualSensor = nullptr;
 	std::array<X::TextureId, 16> mTextureIds{};
 };

@@ -16,13 +16,14 @@ void AI::PerceptionModule::Update(float deltaTime)
 	}
 
 	//remove old memories
-	mMemoryRecords.erase(std::remove_if(
-		mMemoryRecords.begin(),
-		mMemoryRecords.end(),
-		[span = mMemoryRecords](const auto& record)
-		{
-			return record.lastRecordedTime + span < X::GetTime();
-		}), mMemoryRecords.end());
+	mMemoryRecords.erase(
+		std::remove_if(
+			mMemoryRecords.begin(),
+			mMemoryRecords.end(),
+			[span = mMemorySpan](const auto& record)
+			{
+				return record.lastRecordedTime + span < X::GetTime();
+			}), mMemoryRecords.end());
 
 	for (auto& record : mMemoryRecords)
 	{

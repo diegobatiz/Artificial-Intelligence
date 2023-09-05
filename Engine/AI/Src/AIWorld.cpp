@@ -26,3 +26,33 @@ void AIWorld::Unregister(Entity* entity)
 		mEntities.erase(itr);
 	}
 }
+
+void AI::AIWorld::AddObstacle(const X::Math::Circle& obstacle)
+{
+	mObstacles.push_back(obstacle);
+}
+
+void AI::AIWorld::AddWall(const X::Math::LineSegment& wall)
+{
+	mWalls.push_back(wall);
+}
+
+bool AI::AIWorld::HasLineOfSight(const X::Math::LineSegment& lineSegment) const
+{
+	for (auto& wall : mWalls)
+	{
+		if (X::Math::Intersect(lineSegment, wall))
+		{
+			return false;
+		}
+	}
+	for (auto& obstacle : mObstacles)
+	{
+		if (X::Math::Intersect(lineSegment, obstacle))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}

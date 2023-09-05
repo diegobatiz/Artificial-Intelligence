@@ -18,7 +18,7 @@ namespace AI
 		SensorType* AddSensor()
 		{
 			static_assert(std::is_base_of_v<Sensor, SensorType>, "Perception Module: SensorTyoe is not of type Sensor");
-			auto& newSensor = mSensors.emplace_back(std::make_unique(<SensorType>());
+			auto& newSensor = mSensors.emplace_back(std::make_unique<SensorType>());
 			return static_cast<SensorType*>(newSensor.get());
 		}
 

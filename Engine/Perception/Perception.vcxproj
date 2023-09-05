@@ -152,12 +152,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Mineral.cpp" />
     <ClCompile Include="Peon.cpp" />
+    <ClCompile Include="VisualSensor.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Mineral.h" />
     <ClInclude Include="Peon.h" />
     <ClInclude Include="TypeIDs.h" />
+    <ClInclude Include="VisualSensor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

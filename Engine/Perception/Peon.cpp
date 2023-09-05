@@ -1,15 +1,41 @@
 #include "Peon.h"
 #include "TypeIDs.h"
+#include "VisualSensor.h"
+#include "MemoryRecord.h"
 
 extern float wanderJitter;
 extern float wanderRadius;
 extern float wanderDistance;
 
+extern float viewRange;
+extern float viewAngle;
+
 namespace
 {
 	float ComputeImportance(const AI::Agent& agent, const AI::MemoryRecord& record)
 	{
-		return record.importance;
+		Types entityType = static_cast<Types>(record.GetProperty<int>("type"));
+		switch (entityType)
+		{
+		case Types::Invalid: return 10000.0f;
+		case Types::PeonId:
+		{
+			float distance = X::Math::Distance(agent.position, record.GetProperty<X::Math::Vector2>("lastSeenPosition"));
+			float distanceScore = std::max(1000.0f - distance, 0.0f);
+			return distanceScore;
+		}
+		break;
+		case Types::MineralId:
+		{
+			float distance = X::Math::Distance(agent.position, record.GetProperty<X::Math::Vector2>("lastSeenPosition"));
+			float distanceScore = std::max(10000.0f - distance, 0.0f);
+			return distanceScore;
+		}
+		break;
+		default: break;
+		}
+
+		return 10000.0f;
 	}
 }
 
@@ -22,6 +48,10 @@ Peon::Peon(AI::AIWorld& world)
 void Peon::Load()
 {
 	mPerceptionModule = std::make_unique<AI::PerceptionModule>(*this, ComputeImportance);
+	mPerceptionModule->SetMemorySpan(3.0f);
+	mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
+	mVisualSensor->targetType = Types::MineralId;
+
 	mSteeringModule = std::make_unique<AI::SteeringModule>(*this);
 	mSeekBehaviour = mSteeringModule->AddNewBehaviour<AI::SeekBehaviour>();
 	mWanderBehaviour = mSteeringModule->AddNewBehaviour<AI::WanderBehaviour>();
@@ -42,6 +72,8 @@ void Peon::Unload()
 
 void Peon::Update(float deltaTime)
 {
+	mVisualSensor->viewRange = viewRange;
+	mVisualSensor->viewHalfAngle = viewAngle * X::Math::kDegToRad;
 	mPerceptionModule->Update(deltaTime);
 	if (mWanderBehaviour->IsActive())
 	{
@@ -76,6 +108,16 @@ void Peon::Update(float deltaTime)
 	else if (position.y >= screenHeight)
 	{
 		position.y -= screenHeight;
+	}
+
+	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+	for (auto& memory : memoryRecords)
+	{
+		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
+		X::DrawScreenLine(position, pos, X::Colors::Red);
+
+		std::string score = std::to_string(memory.importance);
+		X::DrawScreenText(score.c_str(), pos.x, pos.y, 12.0f, X::Colors::White);
 	}
 }
 
