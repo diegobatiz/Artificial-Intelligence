@@ -31,3 +31,9 @@
 #include "ArriveBehaviour.h"
 #include "PursuitBehaviour.h"
 #include "EvadeBehaviour.h"
+
+//goal based decisions
+#include "Goal.h"
+#include "GoalComposite.h"
+#include "Strategy.h"
+#include "DecisionModule.h"
