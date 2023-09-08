@@ -14,7 +14,7 @@ namespace AI
 			Failed
 		};
 
-		Goal(Agenttype& agent)
+		Goal(AgentType& agent)
 			: mAgent(agent)
 		{
 

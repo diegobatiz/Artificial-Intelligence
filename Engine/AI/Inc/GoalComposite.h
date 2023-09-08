@@ -47,7 +47,7 @@ namespace AI
 				if (goal->mStatus != Status::Completed
 					&& goal->mStatus != Status::Failed)
 				{
-					break
+					break;
 				}
 
 				goal->Terminate();

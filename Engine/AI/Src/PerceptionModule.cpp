@@ -5,6 +5,7 @@ AI::PerceptionModule::PerceptionModule(Agent& agent, ImportanceCalculator calcul
 	: mAgent(agent)
 	, ComputeImportance(calculator)
 {
+	SetMemorySpan(0.0f);
 }
 
 void AI::PerceptionModule::Update(float deltaTime)

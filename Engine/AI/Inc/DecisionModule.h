@@ -21,7 +21,7 @@ namespace AI
 		template<class NewStrategyType>
 		void AddStrategy()
 		{
-			static_cast(std::is_base_of_v<StrategyType, NewStrategyType>, "Decision Module: must be of strategy type");
+			static_assert(std::is_base_of_v<StrategyType, NewStrategyType>, "Decision Module: must be of strategy type");
 			mStrategies.push_back(std::make_unique<StrategyType>());
 		}
 
