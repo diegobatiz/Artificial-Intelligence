@@ -1,11 +1,6 @@
-#include "Spaceship.h"
-#include "TypeIDs.h"
-//#include "VisualSensor.h"
+#include "Miner.h"
+#include "VisualSensor.h"
 #include "MemoryRecord.h"
-
-extern float wanderJitter;
-extern float wanderRadius;
-extern float wanderDistance;
 
 extern float viewRange;
 extern float viewAngle;
@@ -15,21 +10,21 @@ namespace
 	float ComputeImportance(const AI::Agent& agent, const AI::MemoryRecord& record)
 	{
 		Types entityType = static_cast<Types>(record.GetProperty<int>("type"));
+
 		switch (entityType)
 		{
 		case Types::Invalid: return 10000.0f;
-		case Types::SpaceshipID:
-		{
-			float distance = X::Math::Distance(agent.position, record.GetProperty<X::Math::Vector2>("lastSeenPosition"));
-			float distanceScore = std::max(1000.0f - distance, 0.0f);
-			return distanceScore;
-		}
-		break;
-		case Types::MineralID:
+		case Types::MinerID: return 10000.0f;
+		case Types::CrystalID:
 		{
 			float distance = X::Math::Distance(agent.position, record.GetProperty<X::Math::Vector2>("lastSeenPosition"));
 			float distanceScore = std::max(10000.0f - distance, 0.0f);
 			return distanceScore;
+		}
+		break;
+		case Types::BadGuyID:
+		{
+			return 1.0f;
 		}
 		break;
 		default: break;
@@ -40,20 +35,23 @@ namespace
 }
 
 
-Spaceship::Spaceship(AI::AIWorld& world)
-	: Agent(world, Types::SpaceshipID)
+Miner::Miner(AI::AIWorld& world)
+	: Agent(world, Types::MinerID)
 {
 }
 
-void Spaceship::Load()
+void Miner::Load()
 {
+	//load state machine --TO DO
+
 	mPerceptionModule = std::make_unique<AI::PerceptionModule>(*this, ComputeImportance);
 	mPerceptionModule->SetMemorySpan(3.0f);
-	//mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
-	//mVisualSensor->targetType = Types::MineralID;
+	mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
+	mVisualSensor->targetType = Types::CrystalID;
 
 	mSteeringModule = std::make_unique<AI::SteeringModule>(*this);
-	mSeekBehaviour = mSteeringModule->AddNewBehaviour<AI::SeekBehaviour>();
+
+	//load behaviours --TO DO
 	mWanderBehaviour = mSteeringModule->AddNewBehaviour<AI::WanderBehaviour>();
 
 	mWanderBehaviour->SetActive(true);
@@ -66,21 +64,24 @@ void Spaceship::Load()
 	}
 }
 
-void Spaceship::Unload()
+void Miner::Unload()
 {
+	delete mStateMachine;
+	mStateMachine = nullptr;
 }
 
-void Spaceship::Update(float deltaTime)
+void Miner::Update(float deltaTime)
 {
-	//mVisualSensor->viewRange = viewRange;
-	//mVisualSensor->viewHalfAngle = viewAngle * X::Math::kDegToRad;
+	//update perception module
+	mVisualSensor->viewRange = viewRange;
+	mVisualSensor->viewHalfAngle = viewAngle * X::Math::kDegToRad;
 	mPerceptionModule->Update(deltaTime);
 
-	if (mWanderBehaviour->IsActive())
-	{
-		mWanderBehaviour->Setup(wanderRadius, wanderDistance, wanderJitter);
-	}
+	//update state machine
+	mStateMachine->Update(deltaTime);
 
+
+	//Update Position with SteeringModule
 	const auto force = mSteeringModule->Calculate();
 	const auto acceleration = force / mass;
 	velocity += acceleration * deltaTime;
@@ -88,9 +89,10 @@ void Spaceship::Update(float deltaTime)
 	{
 		heading = X::Math::Normalize(velocity);
 	}
-
 	position += velocity * deltaTime;
 
+
+	//Change position if crosses screen boundraries
 	const auto screenWidth = X::GetScreenWidth();
 	const auto screenHeight = X::GetScreenHeight();
 
@@ -111,7 +113,9 @@ void Spaceship::Update(float deltaTime)
 		position.y -= screenHeight;
 	}
 
+	//debug stuff for perception module
 	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+
 	for (auto& memory : memoryRecords)
 	{
 		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
@@ -122,7 +126,7 @@ void Spaceship::Update(float deltaTime)
 	}
 }
 
-void Spaceship::Render()
+void Miner::Render()
 {
 	const float angle = atan2(-heading.x, heading.y) + X::Math::kPi;
 	const float percent = angle / X::Math::kTwoPi;
@@ -130,8 +134,51 @@ void Spaceship::Render()
 	X::DrawSprite(mTextureIds[frame], position);
 }
 
-void Spaceship::ShowDebug(bool debug)
+void Miner::ChangeState(MinerStates newState)
+{
+	mStateMachine->ChangeState(int(newState));
+}
+
+void Miner::ShowDebug(bool debug)
 {
 	mWanderBehaviour->IsDebug(debug);
-	mSeekBehaviour->IsDebug(debug);
+
+	//show debug for behaviours --TO DO
+}
+
+bool Miner::HasTarget()
+{
+	return !mPerceptionModule->GetMemoryRecords().empty();
+}
+
+Types Miner::GetTargetType()
+{
+	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+
+	for (auto& memory : memoryRecords)
+	{
+		Types type = static_cast<Types>(memory.GetProperty<int>("type"));
+		return type;
+	}
+}
+
+X::Math::Vector2 Miner::GetTargetPos()
+{
+	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+
+	for (auto& memory : memoryRecords)
+	{
+		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
+		return pos;
+	}
+}
+
+void Miner::SetupWander(float radius, float distance, float jitter)
+{
+	mWanderBehaviour->Setup(radius, distance, jitter);
+}
+
+void Miner::SetDestinationBase()
+{
+	destination = baseLocation;
 }

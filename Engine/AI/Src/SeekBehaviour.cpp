@@ -32,11 +32,11 @@ X::Math::Vector2 AI::FleeBehaviour::Calculate(Agent& agent)
 	X::Math::Vector2 desiredVelocity = X::Math::Vector2::Zero();
 
 	const auto agentToDest = agent.destination - agent.position;
-	const float distToDest = X::Math::Magnitude(agentToDest);
+	agent.distToDest = X::Math::Magnitude(agentToDest);
 
-	if (distToDest < panicDistance)
+	if (agent.distToDest < panicDistance)
 	{
-		desiredVelocity = -(agentToDest / distToDest) * agent.maxSpeed;
+		desiredVelocity = -(agentToDest / agent.distToDest) * agent.maxSpeed;
 	}
 
 	fleeForce = desiredVelocity - agent.velocity;

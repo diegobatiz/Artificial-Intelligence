@@ -111,6 +111,10 @@ void Peon::Update(float deltaTime)
 	}
 
 	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+	const auto& front = memoryRecords.begin();
+
+	//get type of memory record
+
 	for (auto& memory : memoryRecords)
 	{
 		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");

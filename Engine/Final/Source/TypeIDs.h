@@ -3,6 +3,7 @@
 enum Types
 {
 	Invalid = 0
-	, SpaceshipID = 1
-	, MineralID = 2
+	, MinerID = 1
+	, CrystalID = 2
+	, BadGuyID = 3
 };

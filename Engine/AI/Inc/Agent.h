@@ -16,6 +16,7 @@ namespace AI
 
 		const Agent* target = nullptr;
 
+		float distToDest = 0.f;
 		X::Math::Vector2 destination = X::Math::Vector2::Zero();
 		X::Math::Vector2 velocity = X::Math::Vector2::Zero();
 		float maxSpeed = 100.0f;
