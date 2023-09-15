@@ -1,3 +1,5 @@
+#pragma once
+
 #include <AI.h>
 #include "TypeIDs.h"
 
@@ -51,5 +53,5 @@ private:
 
 	X::Math::Vector2 baseLocation;
 
-	std::array<X::TextureId, 32> mTextureIds{};
+	std::array<X::TextureId, 8> mTextureIds{};
 };

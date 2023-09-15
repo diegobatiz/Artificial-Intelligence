@@ -17,7 +17,7 @@ namespace AI
 		template <class SensorType>
 		SensorType* AddSensor()
 		{
-			static_assert(std::is_base_of_v<Sensor, SensorType>, "Perception Module: SensorTyoe is not of type Sensor");
+			static_assert(std::is_base_of_v<Sensor, SensorType>, "Perception Module: SensorType is not of type Sensor");
 			auto& newSensor = mSensors.emplace_back(std::make_unique<SensorType>());
 			return static_cast<SensorType*>(newSensor.get());
 		}
@@ -26,6 +26,7 @@ namespace AI
 		void SetMemorySpan(float memorySpan) { mMemorySpan = memorySpan; }
 		const MemoryRecords& GetMemoryRecords() const { return mMemoryRecords; }
 		MemoryRecord GetMostImportant();
+		void RemoveFront();
 
 	private:
 		using Sensors = std::vector<std::unique_ptr<Sensor>>;

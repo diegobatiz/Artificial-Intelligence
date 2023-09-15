@@ -3,10 +3,12 @@
 #include <AI.h>
 #include "Source/Miner.h"
 #include "Source/Crystal.h"
+#include "Source/BadGuy.h"
 
 //--------------------------------------------------
 std::vector<std::unique_ptr<Miner>> miners;
 std::vector<std::unique_ptr<Crystal>> crystals;
+std::vector<std::unique_ptr<BadGuy>> badGuys;
 
 AI::AIWorld aiWorld;
 
@@ -18,7 +20,8 @@ float wanderDistance = 50.0f;
 float viewRange = 300.0f;
 float viewAngle = 45.0f;
 
-X::Math::Vector2 basePosition = (0, 0);
+X::Math::Vector2 basePosition{};
+X::Math::Vector2 badBasePosition{};
 
 AI::ArriveBehaviour::Deacceleration deacceleration = AI::ArriveBehaviour::Deacceleration::Normal;
 
@@ -34,6 +37,18 @@ void SpawnMiner()
 	const float screenHeight = X::GetScreenHeight();
 	miner->position = X::RandomVector2({ 100.0f, 100.0f }, { screenWidth - 100.0f, screenHeight - 100.0f });
 	miner->SetBase(basePosition);
+}
+
+void SpawnBadGuy()
+{
+	auto& badGuy = badGuys.emplace_back(std::make_unique<BadGuy>(aiWorld));
+	badGuy->Load();
+	badGuy->ShowDebug(showDebug);
+
+	const float screenWidth = X::GetScreenWidth();
+	const float screenHeight = X::GetScreenHeight();
+	badGuy->position = X::RandomVector2({ 100.0f, 100.0f }, { screenWidth - 100.0f, screenHeight - 100.0f });
+	badGuy->SetBase(badBasePosition);
 }
 
 void SpawnCrystal()
@@ -53,8 +68,15 @@ void GameInit()
 {
 	aiWorld.Initialize();
 
+	const float screenWidth = X::GetScreenWidth();
+	const float screenHeight = X::GetScreenHeight();
+
+	basePosition = { 0, 0 };
+	badBasePosition = { screenWidth, 0};
+
 	SpawnMiner();
 	SpawnCrystal();
+	SpawnBadGuy();
 
 	//aiWorld.AddObstacle({ 230.0f, 300.0f, 50.0f });
 
@@ -71,10 +93,19 @@ void GameInit()
 bool GameLoop(float deltaTime)
 {
 	ImGui::Begin("Steering Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-	if (ImGui::Button("Spawn"))
+	if (ImGui::Button("SpawnMiner"))
 	{
 		SpawnMiner();
 	}
+	if (ImGui::Button("SpawnBadGuy"))
+	{
+		SpawnBadGuy();
+	}
+	if (ImGui::Button("SpawnCrystal"))
+	{
+		SpawnCrystal();
+	}
+
 	if (ImGui::Checkbox("ShowDebug", &showDebug))
 	{
 		for (auto& miner : miners)
@@ -83,19 +114,6 @@ bool GameLoop(float deltaTime)
 		}
 	}
 
-	/*const char* behaviours[] =
-	{
-		"Wander",
-		"Seek"
-	};
-	if (ImGui::Combo("ActiveBehviour##", &activeBehaviour, behaviours, std::size(behaviours)))
-	{
-		for (auto& miner : miners)
-		{
-			miner->SetSeek(activeBehaviour == 1);
-			miner->SetWander(activeBehaviour == 0);
-		}
-	}*/
 	if (ImGui::CollapsingHeader("Wander##Settings", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::DragFloat("Jitter##", &wanderJitter, 0.1f, 0.1f, 10.0f);
@@ -111,10 +129,18 @@ bool GameLoop(float deltaTime)
 	{
 		miner->Update(deltaTime);
 	}
+	for (auto& badGuy : badGuys)
+	{
+		badGuy->Update(deltaTime);
+	}
 
 	for (auto& miner : miners)
 	{
 		miner->Render();
+	}
+	for (auto& badGuy : badGuys)
+	{
+		badGuy->Render();
 	}
 
 	for (auto& crystal : crystals)

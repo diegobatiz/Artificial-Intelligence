@@ -1,14 +1,8 @@
-Bad Guy
-- wander and search for miners (wander behaviour)
-- if sees miner, chase miner until it gets it (seek behaviour)
-- steal resources from miner
-- bring resources back to bad guy base (arrive behaviour)
-
-
 BOTH MINERS AND BAD GUYS HAVE TO AVOID OBSTACLES
 
 Resource
 - when mined, can't be mined for a period of time
 
+- Add point to base of bad guy
 
 change miner and bad guy sprite

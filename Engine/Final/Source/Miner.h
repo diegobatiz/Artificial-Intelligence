@@ -35,6 +35,7 @@ public:
 	bool HasTarget();
 	Types GetTargetType();
 	X::Math::Vector2 GetTargetPos();
+	void RemoveTarget();
 
 	void SetupWander(float radius, float distance, float jitter); 
 	void SetBase(X::Math::Vector2 position); // should be called when making the miner
@@ -45,7 +46,8 @@ public:
 
 private:
 	std::unique_ptr<AI::PerceptionModule> mPerceptionModule;
-	VisualSensor* mVisualSensor = nullptr;
+	VisualSensor* mBadGuySensor = nullptr;
+	VisualSensor* mCrystalSensor = nullptr;
 
 	std::unique_ptr<AI::SteeringModule> mSteeringModule;
 	AI::WanderBehaviour* mWanderBehaviour = nullptr;

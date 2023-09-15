@@ -6,7 +6,7 @@ extern float wanderJitter;
 extern float wanderRadius;
 extern float wanderDistance;
 
-class WanderState : public AI::State<BadGuy>
+class BadWanderState : public AI::State<BadGuy>
 {
 	void Enter(BadGuy& agent) override
 	{
@@ -48,14 +48,18 @@ class ChasingState : public AI::State<BadGuy>
 
 	void Update(BadGuy& agent, float deltaTime) override
 	{
-		if (agent.position.x >= agent.destination.x - 2 && agent.position.x <= agent.destination.x + 2 && agent.position.y >= agent.destination.y - 2 && agent.position.y <= agent.destination.y + 2)
-		{
-			agent.ChangeState(BadGuyStates::Returning);
-			//kill miner using ai world
-		}
-		else if (!agent.HasTarget())
+		if (!agent.HasTarget())
 		{
 			agent.ChangeState(BadGuyStates::Wandering);
+			return;
+		}
+		else if (agent.position.x >= agent.destination.x - 5 && agent.position.x <= agent.destination.x + 5 && agent.position.y >= agent.destination.y - 5 && agent.position.y <= agent.destination.y + 5)
+		{
+			agent.ChangeState(BadGuyStates::Returning);
+
+			agent.destination = agent.GetTargetPos();
+			//kill miner using ai world
+			return;
 		}
 	}
 
@@ -70,7 +74,7 @@ class ChasingState : public AI::State<BadGuy>
 	}
 };
 
-class ReturnState : public AI::State<BadGuy>
+class BadReturnState : public AI::State<BadGuy>
 {
 	void Enter(BadGuy& agent) override
 	{

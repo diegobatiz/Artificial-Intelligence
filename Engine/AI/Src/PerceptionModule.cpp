@@ -42,3 +42,8 @@ AI::MemoryRecord AI::PerceptionModule::GetMostImportant()
 {
 	return mMemoryRecords.front();
 }
+
+void AI::PerceptionModule::RemoveFront()
+{
+	mMemoryRecords.pop_front();
+}

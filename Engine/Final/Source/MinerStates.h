@@ -50,7 +50,10 @@ class SeekingMineState : public AI::State<Miner>
 	void Enter(Miner& agent) override
 	{
 		agent.SetArrive(true);
-		agent.destination = agent.GetTargetPos();
+		if (agent.HasTarget())
+		{
+			agent.destination = agent.GetTargetPos();
+		}
 	}
 
 	void Update(Miner& agent, float deltaTime) override
@@ -58,12 +61,17 @@ class SeekingMineState : public AI::State<Miner>
 		if (agent.position.x >= agent.destination.x - 2 && agent.position.x <= agent.destination.x + 2 && agent.position.y >= agent.destination.y - 2 && agent.position.y <= agent.destination.y + 2)
 		{
 			agent.ChangeState(MinerStates::Mining);
+			return;
 		}
 		else if(!agent.HasTarget())
 			return;
 		else if (agent.GetTargetType() == Types::BadGuyID)
 		{
 			agent.ChangeState(MinerStates::Fleeing);
+		}
+		else if (agent.HasTarget())
+		{
+			agent.destination = agent.GetTargetPos();
 		}
 	}
 
@@ -97,11 +105,12 @@ class MiningState : public AI::State<Miner>
 		{
 			agent.ChangeState(MinerStates::Returning);
 			agent.hasCrystal = true;
+			return;
 		}
 
 		if (!agent.HasTarget())
 			return;
-		if (agent.GetTargetType() == Types::BadGuyID)
+		else if (agent.GetTargetType() == Types::BadGuyID)
 		{
 			agent.ChangeState(MinerStates::Fleeing);
 		}
@@ -129,17 +138,17 @@ class ReturningState : public AI::State<Miner>
 
 	void Update(Miner& agent, float deltaTime) override
 	{
-		if (agent.position.x >= agent.destination.x - 10 && agent.position.x <= agent.destination.x + 10 && agent.position.y >= agent.destination.y - 10 && agent.position.y <= agent.destination.y + 10)
+		if (!agent.HasTarget())
+			return;
+		else if (agent.GetTargetType() == Types::BadGuyID)
+		{
+			agent.ChangeState(MinerStates::Fleeing);
+			return;
+		}
+		else if (agent.position.x >= agent.destination.x - 10 && agent.position.x <= agent.destination.x + 10 && agent.position.y >= agent.destination.y - 10 && agent.position.y <= agent.destination.y + 10)
 		{
 			agent.ChangeState(MinerStates::Wandering);
 			agent.hasCrystal = false;
-		}
-
-		if (!agent.HasTarget())
-			return;
-		if (agent.GetTargetType() == Types::BadGuyID)
-		{
-			agent.ChangeState(MinerStates::Fleeing);
 		}
 	}
 
@@ -169,12 +178,15 @@ class FleeingState : public AI::State<Miner>
 		{
 			agent.ChangeState(agent.prevState);
 		}
-
-		agent.destination = agent.GetTargetPos();
-		
-		if (agent.distToDest > 300.0f)
+		else
 		{
-			agent.ChangeState(agent.prevState);
+			agent.destination = agent.GetTargetPos();
+
+			if (agent.distToDest > 300.0f)
+			{
+				agent.RemoveTarget();
+				agent.ChangeState(agent.prevState);
+			}
 		}
 	}
 

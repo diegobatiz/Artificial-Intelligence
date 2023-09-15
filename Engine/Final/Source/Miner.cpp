@@ -14,8 +14,8 @@ namespace
 
 		switch (entityType)
 		{
-		case Types::Invalid: return 10000.0f;
-		case Types::MinerID: return 10000.0f;
+		case Types::Invalid: return 0.0f;
+		case Types::MinerID: return 0.0f;
 		case Types::CrystalID:
 		{
 			float distance = X::Math::Distance(agent.position, record.GetProperty<X::Math::Vector2>("lastSeenPosition"));
@@ -25,13 +25,13 @@ namespace
 		break;
 		case Types::BadGuyID:
 		{
-			return 1.0f;
+			return 10000.0f;
 		}
 		break;
 		default: break;
 		}
 
-		return 10000.0f;
+		return 0.0f;
 	}
 }
 
@@ -52,8 +52,10 @@ void Miner::Load()
 
 	mPerceptionModule = std::make_unique<AI::PerceptionModule>(*this, ComputeImportance);
 	mPerceptionModule->SetMemorySpan(5.0f);
-	mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
-	mVisualSensor->targetType = Types::CrystalID;
+	mBadGuySensor = mPerceptionModule->AddSensor<VisualSensor>();
+	mCrystalSensor = mPerceptionModule->AddSensor<VisualSensor>();
+	mBadGuySensor->targetType = Types::BadGuyID;
+	mCrystalSensor->targetType = Types::CrystalID;
 
 	mSteeringModule = std::make_unique<AI::SteeringModule>(*this);
 
@@ -80,8 +82,10 @@ void Miner::Unload()
 void Miner::Update(float deltaTime)
 {
 	//update perception module
-	mVisualSensor->viewRange = viewRange;
-	mVisualSensor->viewHalfAngle = viewAngle * X::Math::kDegToRad;
+	mBadGuySensor->viewRange = viewRange;
+	mBadGuySensor->viewHalfAngle = viewAngle * X::Math::kDegToRad;
+	mCrystalSensor->viewRange = viewRange;
+	mCrystalSensor->viewHalfAngle = viewAngle * X::Math::kDegToRad;
 	mPerceptionModule->Update(deltaTime);
 
 	//update state machine
@@ -118,18 +122,6 @@ void Miner::Update(float deltaTime)
 	else if (position.y >= screenHeight)
 	{
 		position.y -= screenHeight;
-	}
-
-	//debug stuff for perception module
-	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
-
-	for (auto& memory : memoryRecords)
-	{
-		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
-		X::DrawScreenLine(position, pos, X::Colors::Red);
-
-		std::string score = std::to_string(memory.importance);
-		X::DrawScreenText(score.c_str(), pos.x, pos.y, 12.0f, X::Colors::White);
 	}
 }
 
@@ -172,6 +164,11 @@ X::Math::Vector2 Miner::GetTargetPos()
 	auto pos = record.GetProperty<X::Math::Vector2>("lastSeenPosition");
 
 	return pos;
+}
+
+void Miner::RemoveTarget()
+{
+	mPerceptionModule->RemoveFront();
 }
 
 void Miner::SetupWander(float radius, float distance, float jitter)

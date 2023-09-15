@@ -41,11 +41,12 @@ void BadGuy::Load()
 {
 	mStateMachine = new AI::StateMachine<BadGuy>(*this);
 	
-
-	//------ TO DO - ADD STATES
+	mStateMachine->AddState<BadWanderState>();
+	mStateMachine->AddState<ChasingState>();
+	mStateMachine->AddState<BadReturnState>();
 
 	mPerceptionModule = std::make_unique<AI::PerceptionModule>(*this, ComputeImportance);
-	mPerceptionModule->SetMemorySpan(5.0f);
+	mPerceptionModule->SetMemorySpan(2.0f);
 	mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
 	mVisualSensor->targetType = Types::MinerID;
 
@@ -60,7 +61,7 @@ void BadGuy::Load()
 	for (int i = 0; i < mTextureIds.size(); i++)
 	{
 		char name[128];
-		sprintf_s(name, "carrier_%02i.png", i + 1); //----- TO DO - CHANGE IMAGE TYPE
+		sprintf_s(name, "BadGuy%02i.png", i + 1); 
 		mTextureIds[i] = X::LoadTexture(name);
 	}
 }
@@ -114,17 +115,17 @@ void BadGuy::Update(float deltaTime)
 		position.y -= screenHeight;
 	}
 
-	//debug stuff for perception module
-	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+	////debug stuff for perception module
+	//const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
 
-	for (auto& memory : memoryRecords)
-	{
-		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
-		X::DrawScreenLine(position, pos, X::Colors::Red);
+	//for (auto& memory : memoryRecords)
+	//{
+	//	auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
+	//	X::DrawScreenLine(position, pos, X::Colors::Red);
 
-		std::string score = std::to_string(memory.importance);
-		X::DrawScreenText(score.c_str(), pos.x, pos.y, 12.0f, X::Colors::White);
-	}
+	//	std::string score = std::to_string(memory.importance);
+	//	X::DrawScreenText(score.c_str(), pos.x, pos.y, 12.0f, X::Colors::White);
+	//}
 }
 
 void BadGuy::Render()
@@ -143,8 +144,8 @@ void BadGuy::ChangeState(BadGuyStates newState)
 void BadGuy::ShowDebug(bool debug)
 {
 	mWanderBehaviour->IsDebug(debug);
-
-	//show debug for behaviours --TO DO
+	mSeekBehaviour->IsDebug(debug);
+	mArriveBehaviour->IsDebug(debug);
 }
 
 bool BadGuy::HasTarget()
