@@ -11,6 +11,9 @@
     <ClCompile Include="Source\VisualSensor.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\BadGuy.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
@@ -34,6 +37,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="Source\VisualSensor.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BadGuy.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BadGuyStates.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

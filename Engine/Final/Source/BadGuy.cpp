@@ -1,7 +1,7 @@
-#include "Miner.h"
+#include "BadGuy.h"
 #include "VisualSensor.h"
 #include "MemoryRecord.h"
-#include "MinerStates.h"
+#include "BadGuyStates.h"
 
 extern float viewRange;
 extern float viewAngle;
@@ -15,19 +15,15 @@ namespace
 		switch (entityType)
 		{
 		case Types::Invalid: return 10000.0f;
-		case Types::MinerID: return 10000.0f;
+		case Types::MinerID: return 1.0f;
 		case Types::CrystalID:
 		{
 			float distance = X::Math::Distance(agent.position, record.GetProperty<X::Math::Vector2>("lastSeenPosition"));
-			float distanceScore = std::max(10000.0f - distance, 0.0f);
+			float distanceScore = std::max(1000.0f - distance, 0.0f);
 			return distanceScore;
 		}
 		break;
-		case Types::BadGuyID:
-		{
-			return 1.0f;
-		}
-		break;
+		case Types::BadGuyID: return 10000.0f;
 		default: break;
 		}
 
@@ -36,48 +32,46 @@ namespace
 }
 
 
-Miner::Miner(AI::AIWorld& world)
-	: Agent(world, Types::MinerID)
+BadGuy::BadGuy(AI::AIWorld& world)
+	: Agent(world, Types::BadGuyID)
 {
 }
 
-void Miner::Load()
+void BadGuy::Load()
 {
-	mStateMachine = new AI::StateMachine<Miner>(*this);
-	mStateMachine->AddState<WanderState>();
-	mStateMachine->AddState<SeekingMineState>();
-	mStateMachine->AddState<MiningState>();
-	mStateMachine->AddState<ReturningState>();
-	mStateMachine->AddState<FleeingState>();
+	mStateMachine = new AI::StateMachine<BadGuy>(*this);
+	
+
+	//------ TO DO - ADD STATES
 
 	mPerceptionModule = std::make_unique<AI::PerceptionModule>(*this, ComputeImportance);
 	mPerceptionModule->SetMemorySpan(5.0f);
 	mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
-	mVisualSensor->targetType = Types::CrystalID;
+	mVisualSensor->targetType = Types::MinerID;
 
 	mSteeringModule = std::make_unique<AI::SteeringModule>(*this);
 
 	mWanderBehaviour = mSteeringModule->AddNewBehaviour<AI::WanderBehaviour>();
 	mArriveBehaviour = mSteeringModule->AddNewBehaviour<AI::ArriveBehaviour>();
-	mFleeBehaviour = mSteeringModule->AddNewBehaviour<AI::FleeBehaviour>();
+	mSeekBehaviour = mSteeringModule->AddNewBehaviour<AI::SeekBehaviour>();
 
 	mStateMachine->ChangeState(0);
 
 	for (int i = 0; i < mTextureIds.size(); i++)
 	{
 		char name[128];
-		sprintf_s(name, "carrier_%02i.png", i + 1);
+		sprintf_s(name, "carrier_%02i.png", i + 1); //----- TO DO - CHANGE IMAGE TYPE
 		mTextureIds[i] = X::LoadTexture(name);
 	}
 }
 
-void Miner::Unload()
+void BadGuy::Unload()
 {
 	delete mStateMachine;
 	mStateMachine = nullptr;
 }
 
-void Miner::Update(float deltaTime)
+void BadGuy::Update(float deltaTime)
 {
 	//update perception module
 	mVisualSensor->viewRange = viewRange;
@@ -133,7 +127,7 @@ void Miner::Update(float deltaTime)
 	}
 }
 
-void Miner::Render()
+void BadGuy::Render()
 {
 	const float angle = atan2(-heading.x, heading.y) + X::Math::kPi;
 	const float percent = angle / X::Math::kTwoPi;
@@ -141,24 +135,24 @@ void Miner::Render()
 	X::DrawSprite(mTextureIds[frame], position);
 }
 
-void Miner::ChangeState(MinerStates newState)
+void BadGuy::ChangeState(BadGuyStates newState)
 {
 	mStateMachine->ChangeState(int(newState));
 }
 
-void Miner::ShowDebug(bool debug)
+void BadGuy::ShowDebug(bool debug)
 {
 	mWanderBehaviour->IsDebug(debug);
-	mArriveBehaviour->IsDebug(debug);
-	mFleeBehaviour->IsDebug(debug);
+
+	//show debug for behaviours --TO DO
 }
 
-bool Miner::HasTarget()
+bool BadGuy::HasTarget()
 {
 	return !mPerceptionModule->GetMemoryRecords().empty();
 }
 
-Types Miner::GetTargetType()
+Types BadGuy::GetTargetType()
 {
 	AI::MemoryRecord record = mPerceptionModule->GetMostImportant();
 
@@ -166,7 +160,7 @@ Types Miner::GetTargetType()
 	return type;
 }
 
-X::Math::Vector2 Miner::GetTargetPos()
+X::Math::Vector2 BadGuy::GetTargetPos()
 {
 	AI::MemoryRecord record = mPerceptionModule->GetMostImportant();
 	auto pos = record.GetProperty<X::Math::Vector2>("lastSeenPosition");
@@ -174,17 +168,17 @@ X::Math::Vector2 Miner::GetTargetPos()
 	return pos;
 }
 
-void Miner::SetupWander(float radius, float distance, float jitter)
+void BadGuy::SetupWander(float radius, float distance, float jitter)
 {
 	mWanderBehaviour->Setup(radius, distance, jitter);
 }
 
-void Miner::SetBase(X::Math::Vector2 position)
+void BadGuy::SetBase(X::Math::Vector2 position)
 {
 	baseLocation = position;
 }
 
-void Miner::SetDestinationBase()
+void BadGuy::SetDestinationBase()
 {
 	destination = baseLocation;
 }

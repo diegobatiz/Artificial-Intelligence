@@ -1,16 +1,6 @@
-two agent types
-
-Miner
-- wander and search for resources to mine(wander behaviour)
-- if sees resources go to resources(arrive behaviour), 
-	mine the resources for a couple seconds and get stuff (no behaviour)
-- bring stuff back to main base (arrive behaviour) ->set location of base on load
-- if chased by bad guy, run away (flee behaviour)
-
-
 Bad Guy
 - wander and search for miners (wander behaviour)
-- if sees miner, chase miner until it gets it (pursuit behaviour)
+- if sees miner, chase miner until it gets it (seek behaviour)
 - steal resources from miner
 - bring resources back to bad guy base (arrive behaviour)
 
@@ -22,7 +12,3 @@ Resource
 
 
 change miner and bad guy sprite
-
-
-
-ask if there's a better way to get position and target type
