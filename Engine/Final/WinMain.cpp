@@ -2,9 +2,11 @@
 #include <ImGui/Inc/imgui.h>
 #include <AI.h>
 #include "Source/Miner.h"
+#include "Source/Crystal.h"
 
 //--------------------------------------------------
 std::vector<std::unique_ptr<Miner>> miners;
+std::vector<std::unique_ptr<Crystal>> crystals;
 
 AI::AIWorld aiWorld;
 
@@ -15,6 +17,8 @@ float wanderDistance = 50.0f;
 
 float viewRange = 300.0f;
 float viewAngle = 45.0f;
+
+X::Math::Vector2 basePosition = (0, 0);
 
 AI::ArriveBehaviour::Deacceleration deacceleration = AI::ArriveBehaviour::Deacceleration::Normal;
 
@@ -29,6 +33,13 @@ void SpawnMiner()
 	const float screenWidth = X::GetScreenWidth();
 	const float screenHeight = X::GetScreenHeight();
 	miner->position = X::RandomVector2({ 100.0f, 100.0f }, { screenWidth - 100.0f, screenHeight - 100.0f });
+	miner->SetBase(basePosition);
+}
+
+void SpawnCrystal()
+{
+	auto& crystal = crystals.emplace_back(std::make_unique<Crystal>(aiWorld));
+	crystal->Initialize();
 }
 
 void KillMiner()
@@ -41,7 +52,9 @@ void KillMiner()
 void GameInit()
 {
 	aiWorld.Initialize();
+
 	SpawnMiner();
+	SpawnCrystal();
 
 	//aiWorld.AddObstacle({ 230.0f, 300.0f, 50.0f });
 
@@ -61,10 +74,6 @@ bool GameLoop(float deltaTime)
 	if (ImGui::Button("Spawn"))
 	{
 		SpawnMiner();
-	}
-	if (ImGui::Button("Kill"))
-	{
-		KillMiner();
 	}
 	if (ImGui::Checkbox("ShowDebug", &showDebug))
 	{
@@ -106,6 +115,11 @@ bool GameLoop(float deltaTime)
 	for (auto& miner : miners)
 	{
 		miner->Render();
+	}
+
+	for (auto& crystal : crystals)
+	{
+		crystal->Render();
 	}
 
 	/*auto& obstacles = aiWorld.GetObstacles();

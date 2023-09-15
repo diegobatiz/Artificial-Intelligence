@@ -1,6 +1,7 @@
 #include "Miner.h"
 #include "VisualSensor.h"
 #include "MemoryRecord.h"
+#include "MinerStates.h"
 
 extern float viewRange;
 extern float viewAngle;
@@ -42,19 +43,25 @@ Miner::Miner(AI::AIWorld& world)
 
 void Miner::Load()
 {
-	//load state machine --TO DO
+	mStateMachine = new AI::StateMachine<Miner>(*this);
+	mStateMachine->AddState<WanderState>();
+	mStateMachine->AddState<SeekingMineState>();
+	mStateMachine->AddState<MiningState>();
+	mStateMachine->AddState<ReturningState>();
+	mStateMachine->AddState<FleeingState>();
 
 	mPerceptionModule = std::make_unique<AI::PerceptionModule>(*this, ComputeImportance);
-	mPerceptionModule->SetMemorySpan(3.0f);
+	mPerceptionModule->SetMemorySpan(5.0f);
 	mVisualSensor = mPerceptionModule->AddSensor<VisualSensor>();
 	mVisualSensor->targetType = Types::CrystalID;
 
 	mSteeringModule = std::make_unique<AI::SteeringModule>(*this);
 
-	//load behaviours --TO DO
 	mWanderBehaviour = mSteeringModule->AddNewBehaviour<AI::WanderBehaviour>();
+	mArriveBehaviour = mSteeringModule->AddNewBehaviour<AI::ArriveBehaviour>();
+	mFleeBehaviour = mSteeringModule->AddNewBehaviour<AI::FleeBehaviour>();
 
-	mWanderBehaviour->SetActive(true);
+	mStateMachine->ChangeState(0);
 
 	for (int i = 0; i < mTextureIds.size(); i++)
 	{
@@ -153,29 +160,27 @@ bool Miner::HasTarget()
 
 Types Miner::GetTargetType()
 {
-	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+	AI::MemoryRecord record = mPerceptionModule->GetMostImportant();
 
-	for (auto& memory : memoryRecords)
-	{
-		Types type = static_cast<Types>(memory.GetProperty<int>("type"));
-		return type;
-	}
+	Types type = static_cast<Types>(record.GetProperty<int>("type"));
+	return type;
 }
 
 X::Math::Vector2 Miner::GetTargetPos()
 {
-	const auto& memoryRecords = mPerceptionModule->GetMemoryRecords();
+	AI::MemoryRecord record = mPerceptionModule->GetMostImportant();
+	auto pos = record.GetProperty<X::Math::Vector2>("lastSeenPosition");
 
-	for (auto& memory : memoryRecords)
-	{
-		auto pos = memory.GetProperty<X::Math::Vector2>("lastSeenPosition");
-		return pos;
-	}
+	return pos;
 }
 
 void Miner::SetupWander(float radius, float distance, float jitter)
 {
 	mWanderBehaviour->Setup(radius, distance, jitter);
+}
+
+void Miner::SetBase(X::Math::Vector2 position)
+{
 }
 
 void Miner::SetDestinationBase()

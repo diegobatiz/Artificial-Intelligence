@@ -12,5 +12,5 @@ public:
 	void Render();
 
 private:
-	X::TextureId mTextureId;
+	X::TextureId mTextureId{};
 };

@@ -37,3 +37,8 @@ void AI::PerceptionModule::Update(float deltaTime)
 			return a.importance > b.importance;
 		});
 }
+
+AI::MemoryRecord AI::PerceptionModule::GetMostImportant()
+{
+	return mMemoryRecords.front();
+}

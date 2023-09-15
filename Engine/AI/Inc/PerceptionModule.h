@@ -25,6 +25,7 @@ namespace AI
 		void Update(float deltaTime);
 		void SetMemorySpan(float memorySpan) { mMemorySpan = memorySpan; }
 		const MemoryRecords& GetMemoryRecords() const { return mMemoryRecords; }
+		MemoryRecord GetMostImportant();
 
 	private:
 		using Sensors = std::vector<std::unique_ptr<Sensor>>;

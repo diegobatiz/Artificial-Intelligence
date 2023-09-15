@@ -37,9 +37,11 @@ public:
 	X::Math::Vector2 GetTargetPos();
 
 	void SetupWander(float radius, float distance, float jitter); 
+	void SetBase(X::Math::Vector2 position); // should be called when making the miner
 	void SetDestinationBase();
 
 	bool hasCrystal;
+	MinerStates prevState = MinerStates::Wandering;
 
 private:
 	std::unique_ptr<AI::PerceptionModule> mPerceptionModule;

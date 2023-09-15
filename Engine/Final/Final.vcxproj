@@ -149,12 +149,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Spaceship.cpp" />
+    <ClCompile Include="Source\Crystal.cpp" />
+    <ClCompile Include="Source\Miner.cpp" />
+    <ClCompile Include="Source\VisualSensor.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Spaceship.h" />
+    <ClInclude Include="Source\Crystal.h" />
+    <ClInclude Include="Source\Miner.h" />
+    <ClInclude Include="Source\MinerStates.h" />
     <ClInclude Include="Source\TypeIDs.h" />
+    <ClInclude Include="Source\VisualSensor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

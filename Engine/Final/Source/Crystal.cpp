@@ -9,8 +9,10 @@ Crystal::Crystal(AI::AIWorld& world)
 void Crystal::Initialize()
 {
 	mTextureId = X::LoadTexture("minerals.png");
-	position = X::RandomVector2({ 500.0f, 100.0f }, { 780.0f, 710.0f });
-	position.x += X::Random(0, 1) == 0 ? -300.0f : 300.0f;
+
+	const float screenWidth = X::GetScreenWidth();
+	const float screenHeight = X::GetScreenHeight();
+	position = X::RandomVector2({ 100.0f, 100.0f }, { screenWidth - 100.0f, screenHeight - 100.0f });
 }
 
 void Crystal::Render()

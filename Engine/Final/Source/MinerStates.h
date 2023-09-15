@@ -20,11 +20,13 @@ class WanderState : public AI::State<Miner>
 
 		if (!agent.HasTarget())
 			return;
-		if (agent.GetTargetType() == Types::CrystalID)
+
+		Types targetType = agent.GetTargetType();
+		if (targetType == Types::CrystalID)
 		{
 			agent.ChangeState(MinerStates::SeekingMine);
 		}
-		else if (agent.GetTargetType() == Types::BadGuyID)
+		else if (targetType == Types::BadGuyID)
 		{
 			agent.ChangeState(MinerStates::Fleeing);
 		}
@@ -33,6 +35,7 @@ class WanderState : public AI::State<Miner>
 	void Exit(Miner& agent) override
 	{
 		agent.SetWander(false);
+		agent.prevState = MinerStates::Wandering;
 	}
 
 	void DebugUI() override
@@ -52,23 +55,22 @@ class SeekingMineState : public AI::State<Miner>
 
 	void Update(Miner& agent, float deltaTime) override
 	{
-		if (!agent.HasTarget())
+		if (agent.position.x >= agent.destination.x - 2 && agent.position.x <= agent.destination.x + 2 && agent.position.y >= agent.destination.y - 2 && agent.position.y <= agent.destination.y + 2)
 		{
-			agent.ChangeState(MinerStates::Wandering);
+			agent.ChangeState(MinerStates::Mining);
 		}
+		else if(!agent.HasTarget())
+			return;
 		else if (agent.GetTargetType() == Types::BadGuyID)
 		{
 			agent.ChangeState(MinerStates::Fleeing);
-		}
-		else if (agent.position == agent.destination)
-		{
-			agent.ChangeState(MinerStates::Mining);
 		}
 	}
 
 	void Exit(Miner& agent) override
 	{
 		agent.SetArrive(false);
+		agent.prevState = MinerStates::SeekingMine;
 	}
 
 	void DebugUI() override
@@ -91,19 +93,23 @@ class MiningState : public AI::State<Miner>
 	{
 		mineTimer -= deltaTime;
 
-		if (agent.GetTargetType() == Types::BadGuyID)
-		{
-			agent.ChangeState(MinerStates::Fleeing);
-		}
-		else if (mineTimer <= 0.0f)
+		if (mineTimer <= 0.0f)
 		{
 			agent.ChangeState(MinerStates::Returning);
 			agent.hasCrystal = true;
+		}
+
+		if (!agent.HasTarget())
+			return;
+		if (agent.GetTargetType() == Types::BadGuyID)
+		{
+			agent.ChangeState(MinerStates::Fleeing);
 		}
 	}
 
 	void Exit(Miner& agent) override
 	{
+		agent.prevState = MinerStates::Mining;
 	}
 
 	void DebugUI() override
@@ -123,20 +129,24 @@ class ReturningState : public AI::State<Miner>
 
 	void Update(Miner& agent, float deltaTime) override
 	{
-		if (agent.GetTargetType() == Types::BadGuyID)
-		{
-			agent.ChangeState(MinerStates::Fleeing);
-		}
-		else if (agent.position == agent.destination)
+		if (agent.position.x >= agent.destination.x - 10 && agent.position.x <= agent.destination.x + 10 && agent.position.y >= agent.destination.y - 10 && agent.position.y <= agent.destination.y + 10)
 		{
 			agent.ChangeState(MinerStates::Wandering);
 			agent.hasCrystal = false;
+		}
+
+		if (!agent.HasTarget())
+			return;
+		if (agent.GetTargetType() == Types::BadGuyID)
+		{
+			agent.ChangeState(MinerStates::Fleeing);
 		}
 	}
 
 	void Exit(Miner& agent) override
 	{
 		agent.SetArrive(false);
+		agent.prevState = MinerStates::Returning;
 	}
 
 	void DebugUI() override
@@ -155,17 +165,23 @@ class FleeingState : public AI::State<Miner>
 
 	void Update(Miner& agent, float deltaTime) override
 	{
+		if (!agent.HasTarget())
+		{
+			agent.ChangeState(agent.prevState);
+		}
+
 		agent.destination = agent.GetTargetPos();
 		
 		if (agent.distToDest > 300.0f)
 		{
-			//return to previous state
+			agent.ChangeState(agent.prevState);
 		}
 	}
 
 	void Exit(Miner& agent) override
 	{
 		agent.SetFlee(false);
+		agent.prevState = MinerStates::Fleeing;
 	}
 
 	void DebugUI() override
