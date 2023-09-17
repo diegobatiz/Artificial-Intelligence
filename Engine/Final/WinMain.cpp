@@ -21,7 +21,9 @@ float viewRange = 300.0f;
 float viewAngle = 45.0f;
 
 X::Math::Vector2 basePosition{};
+X::Math::Circle circleBase{};
 X::Math::Vector2 badBasePosition{};
+X::Math::Circle circleBadBase{};
 
 AI::ArriveBehaviour::Deacceleration deacceleration = AI::ArriveBehaviour::Deacceleration::Normal;
 
@@ -71,8 +73,12 @@ void GameInit()
 	const float screenWidth = X::GetScreenWidth();
 	const float screenHeight = X::GetScreenHeight();
 
-	basePosition = { 0, 0 };
-	badBasePosition = { screenWidth, 0};
+	basePosition = { 100, 100 };
+	circleBase.center = basePosition;
+	circleBase.radius = 100.0f;
+	badBasePosition = { screenWidth - 100, 100 };
+	circleBadBase.center = badBasePosition;
+	circleBadBase.radius = 100.0f;
 
 	SpawnMiner();
 	SpawnCrystal();
@@ -112,7 +118,12 @@ bool GameLoop(float deltaTime)
 		{
 			miner->ShowDebug(showDebug);
 		}
+		for (auto& badGuy : badGuys)
+		{
+			badGuy->ShowDebug(showDebug);
+		}
 	}
+
 
 	if (ImGui::CollapsingHeader("Wander##Settings", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -147,6 +158,9 @@ bool GameLoop(float deltaTime)
 	{
 		crystal->Render();
 	}
+
+	X::DrawScreenCircle(circleBase.center, circleBase.radius, X::Colors::White);
+	X::DrawScreenCircle(circleBadBase.center, circleBadBase.radius, X::Colors::White);
 
 	/*auto& obstacles = aiWorld.GetObstacles();
 	for (auto& obstacle : obstacles)

@@ -57,9 +57,11 @@ class ChasingState : public AI::State<BadGuy>
 		{
 			agent.ChangeState(BadGuyStates::Returning);
 
-			agent.destination = agent.GetTargetPos();
-			//kill miner using ai world
 			return;
+		}
+		else
+		{
+			agent.destination = agent.GetTargetPos();
 		}
 	}
 
